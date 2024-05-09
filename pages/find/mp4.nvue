@@ -1,0 +1,195 @@
+<template>
+	<view class="page" :style="{minHeight:screenHeight+'px'}">
+		<view style="position: relative;">
+			<view class="header-wrap">
+				<image src="/static/images/find/mp3Bg.png" style="width: 750rpx;position: absolute;left: 0;top: 0;z-index: 1;" :style="{height:headerBgHeight+'px'}" mode=""></image>
+				<view class="status-bar-height" style="width:750rpx;" :style="{height:statusBarHeight+'px'}">
+			
+				</view>
+				<view style="height: 372rpx;padding: 20rpx 54rpx 0;width: 750rpx;position: relative;z-index: 10;">
+					<view class="base-flex-between" style="flex-direction: row;width: 642rpx;justify-content: space-between;">
+						<image @tap="navBack" src="/static/images/find/backIcon.png" style="width: 68rpx;height: 68rpx;"
+							mode=""></image>
+						<view style="text-align: center;font-size: 38rpx;color: #020202;font-weight: 500;">GEORGE ORWELL {{topInfoHeight}}
+						</view>
+						<image @tap="sharePopup" src="/static/images/find/shareIcon.png" style="width: 68rpx;height: 68rpx;"
+							mode=""></image>
+					</view>
+					
+				</view> 
+				
+			</view>
+			<view :style="{top:topInfoHeight+'px'}" style="position: absolute;left:55rpx;display: flex;flex-direction: column;align-items: center;z-index: 20;width: 640rpx;background-color: #fff;border-radius: 16rpx;padding: 16rpx;box-shadow: 0px 10px 28px 0px #DDDFE6;">
+				<video src="/static/images/find/video1_5m.mp4" style="width: 608rpx;height: 338rpx;border-radius: 20rpx;"></video>
+				<!-- <view style="margin-top: 30rpx;padding: 0 90rpx;flex-direction: row;justify-content: space-between;align-items: center;width: 608rpx;">
+					<view style="padding: 0 30rpx;height: 76rpx;flex-direction: row;align-items: center;justify-content: center;">
+						<image style="width: 44rpx;height: 44rpx" src="/static/images/find/leftAction.png" mode="">
+						</image>
+					</view>
+					<image src="/static/images/find/video.png" style="width: 76rpx;height: 76rpx;" mode=""></image>
+					<view style="padding: 0 30rpx;height: 76rpx;flex-direction: row;align-items: center;justify-content: center;">
+						<image style="width: 44rpx;height: 44rpx" src="/static/images/find/rightAction.png" mode="">
+						</image>
+					</view>
+				</view>	 -->
+			</view>
+			<!-- <view style="height: 250rpx;position: relative;z-index: 200;" class="flex-item-center">
+				
+			</view> -->
+			<view style="height: 200rpx;position: relative;z-index: 200;" class="flex-item-center">
+				
+			</view>
+		</view>	
+		
+		
+		<view style="padding: 0 54rpx 50rpx;border-bottom: 8rpx solid #F5F6FA;background-color: #fff;">
+			<view>
+				<text style="font-size: 30rpx;color: #020202;font-weight: 500;">TOSTAKY</text>
+			</view>	
+			<view style="margin: 8rpx 0 36rpx;">
+				<text style="font-size: 24rpx;color: #999999;">发布者：1984 GO</text>
+			</view>
+			<view >
+				<text style="font-size: 24rpx;color: #999999;line-height: 32rpx;">我们在生活的道路上,也许会遇到很多的艰难险阻,有时几经奋斗后,也不 我们在生活的道路上,也许会遇到很多的艰难，我们在生活的道路上,也许会遇到很多的艰难险阻,有时几经奋斗后,也不
+				我们在生活的道路上,也许会遇到很多的艰难。遇到很多的艰难，我们在生活的道路上,也许会遇到很多的艰难险阻,有时几经奋斗后,也不 我们在生活的道路上,也许会遇到很多的艰难。</text>	
+			</view>
+		</view>
+		<view style="padding:40rpx 0 40rpx 54rpx;background-color: #fff;">
+			<view style="margin-bottom: 32rpx;">
+				<text style="font-size: 36rpx;color: #12131B;font-weight: 500;">相关推荐</text>
+			</view>
+			<scroll-view scroll-x="true" :show-scrollbar="false">
+				<view class="flex-center" style="flex-wrap: nowrap;flex-direction: row;" :style="{width:scrollContentWidth+'px'}">
+					<view v-for="(item,i) in listData" :key="i"
+						style="width: 286rpx;flex-shrink: 0;margin-right: 24rpx;display: flex;flex-direction: column;align-items: center;padding-top: 134rpx;position: relative;">
+						
+						<view
+							style="width: 100%;height: 180rpx;background-color: #F5F6FA;border-radius: 16rpx;padding-top: 86rpx;display: flex;flex-direction: column;align-items: center;">
+							<view
+								style="font-size: 26rpx;color: #020202;font-weight: 500;text-align: center;width: 260rpx;"
+								class="text-one-line">
+								<text style="font-size: 26rpx;color: #020202;font-weight: 500;text-align: center;width: 260rpx;">GEORGE ORWELL</text>
+								</view>
+							<view
+								style="font-size: 22rpx;color: #999999;text-align: center;width: 260rpx;margin-top: 6rpx;"
+								>
+									<text class="text-one-line" style="font-size: 22rpx;color: #999999;text-align: center;width: 260rpx;">发布者：1984 GO的点点滴滴的点点滴滴哒哒哒哒哒哒哒哒哒哒哒哒</text>	
+								</view>
+						</view>
+						<image src="/static/images/find/poster1.png"
+							style="position: absolute;left: 67rpx;top: 0;width: 152rpx;height: 204rpx;"
+							mode="aspectFill"></image>
+					</view>
+				</view>
+			</scroll-view>
+		</view>
+		<uni-popup ref="popup" type="bottom">
+			<view style="background-color: #fff;border-radius: 40rpx 40rpx 0 0;padding: 44rpx 54rpx 92rpx;width: 750rpx;">
+				<view class="base-flex-between" style="margin-bottom: 56rpx;flex-direction: row;width: 642rpx;align-items: center;justify-content: space-between;">
+					<text style="font-size: 36rpx;color: #12131B;font-weight: 500;">分享至</text>
+					<image @tap="hidePopup" src="/static/images/find/guanbiIcon.png" style="width: 68rpx;height: 68rpx;" mode=""></image>
+					
+				</view>
+				<view class="base-flex-between" style="padding: 0 126rpx;flex-direction: row;width: 642rpx;align-items: center;justify-content: space-between;">
+					<view style="display: flex;flex-direction: column;align-items: center;padding: 0 20rpx;">
+						<image src="/static/images/find/haoyouIcon.png" style="width: 112rpx;height: 112rpx;margin-bottom: 12rpx;" mode=""></image>
+						<text style="font-size: 28rpx;color: #999;">好友</text>
+					</view>
+					<view style="display: flex;flex-direction: column;align-items: center;padding: 0 20rpx;">
+						<image src="/static/images/find/haoyouIcon.png" style="width: 112rpx;height: 112rpx;margin-bottom: 12rpx;" mode=""></image>
+						<text style="font-size: 28rpx;color: #999;">群聊</text>
+					</view>
+				</view>
+			</view>
+		</uni-popup>
+	</view>
+</template>
+
+<script>
+	import {
+		mapActions,
+		mapGetters
+	} from 'vuex'
+	export default {
+		data() {
+			return {
+				left: 0,
+				listData: [{
+					title: '',
+					type: 1
+				}, {
+					title: '',
+					type: 2
+				}, {
+					title: '',
+					type: 1
+				}, {
+					title: '',
+					type: 2
+				}],
+				show:false,
+				statusBarHeight:null,
+				headerBgHeight:null,
+				topInfoHeight:null,
+				screenHeight:null,
+				scrollContentWidth:null
+			}
+		},
+		onLoad() {
+			this.statusBarHeight=uni.getSystemInfoSync().statusBarHeight;
+			console.log(this.statusBarHeight,'this.statusBarHeight')
+			this.headerBgHeight=this.statusBarHeight+uni.upx2px(372)
+			this.topInfoHeight=this.statusBarHeight+uni.upx2px(140)
+			this.screenHeight=uni.getSystemInfoSync().screenHeight;
+			this.scrollContentWidth=uni.upx2px(286+24)*this.listData.length;
+		},
+		methods: {
+			navBack() {
+				uni.navigateBack()
+			},
+			sharePopup() {
+				this.$refs.popup.open()
+			},
+			hidePopup(){
+				this.$refs.popup.close()
+			}
+		}
+
+	}
+</script>
+<style lang="scss" scoped>
+	::v-deep .u-drawer-bottom{
+		border-radius: 40rpx 40rpx 0 0;
+	}
+	.page {
+		background-color: #fff;
+		overflow: hidden;
+	}
+
+	.header-wrap {
+		// background: url(../../static/images/find/mp3Bg.png) no-repeat 100% 100%;
+		// background-size: 100% 100%;
+		position: relative;
+		width: 750rpx;
+		z-index: 1;
+	}
+
+	// 隐藏scroll-view的滚动条
+	::-webkit-scrollbar {
+		display: none;
+		width: 0 !important;
+		height: 0 !important;
+		-webkit-appearance: none;
+		background: transparent;
+		color: transparent;
+	}
+	.text-one-line {
+		white-space: nowrap;
+		width: 100%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		lines:1;
+		display: inline-block;
+	}
+	
+</style>
