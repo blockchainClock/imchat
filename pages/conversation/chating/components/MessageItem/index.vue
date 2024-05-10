@@ -4,7 +4,7 @@
     v-if="!getNoticeContent && source.contentType != 2101 "
     :id="`auchor${source.clientMsgID}`"
     class="message_item"
-    :class="{ message_item_self: isSender, message_item_active: isActive }"
+    :class="{ message_item_self: isSender2, message_item_active: isActive }"
   >
     
     <my-avatar
@@ -12,10 +12,10 @@
       @click="showInfo"
       size="42"
       :desc="source.senderNickname"
-      :src="source.senderFaceUrl"
+      :src="isSender2 ? storeSelfInfo.faceURL :  storeCurrentConversation.faceURL"
     />
     <view class="message_container">
-      <view class="message_sender" :style="{ 'flex-direction': !isSender ? 'row-reverse' : 'row' }" >
+      <view class="message_sender" :style="{ 'flex-direction': !isSender2 ? 'row-reverse' : 'row' }" >
         <text>{{ formattedMessageTime }}</text>
         <text style="margin-left: 2rpx;margin-right: 2rpx;">{{ '' }}</text>
         <text v-if="!isSingle">{{source.senderNickname }}</text>
@@ -31,16 +31,17 @@
             />
           </view>
         </view>
-        <view class="message_content_wrap">
+        <view class="message_content_wrap" 
+			@longtap="longclick">
           <text-message-render
             v-if="showTextRender"
             :message="source"
             @showInfo="showInfo"
           />
           <media-message-render v-else-if="showMediaRender" :message="source" />
-		  
+		  <call-message-render v-else-if="getshowCustomMessage(callRenderTypes)" :message="source" :isSender="isSender2"></call-message-render> 
 		  <error-message-render v-else />
-		  <MessageTool v-if="isshowTool" :messageDec="isSender" :source="source"></MessageTool>
+		  <MessageTool v-if="isshowTool && source.contentType !=110" :messageDec="isSender2" :source="source"></MessageTool>
 		   
         </view>
       </view>
@@ -62,7 +63,7 @@
       :lazyLoad="false"
       :content="getNoticeContent"
     />
-	<MessageTool  v-if="isshowTool"  :messageDec= "isSender" :source="source" ></MessageTool>
+	<MessageTool  v-if="isshowTool"  :messageDec= "isSender2" :source="source" ></MessageTool>
 	
   </view>
 </template>
@@ -80,8 +81,10 @@ import MyAvatar from "@/components/MyAvatar/index.vue";
 import ChatingList from "../ChatingList.vue";
 import TextMessageRender from "./TextMessageRender.vue";
 import MediaMessageRender from "./MediaMessageRender.vue";
+import CallMessageRender from "./CallMessageRender.vue";
 import ErrorMessageRender from "./ErrorMessageRender.vue";
 import MessageTool from "./MessageTool.vue";
+import { CustomType } from "@/constant/im";
 import {
   noticeMessageTypes,
   PageEvents,
@@ -94,8 +97,7 @@ const textRenderTypes = [
   MessageType.AtTextMessage,
   MessageType.QuoteMessage,
 ];
-
-const mediaRenderTypes = [MessageType.VideoMessage, MessageType.PictureMessage];
+const mediaRenderTypes = [MessageType.VoiceMessage, MessageType.VideoMessage, MessageType.PictureMessage];
 
 export default {
   components: {
@@ -103,7 +105,8 @@ export default {
     TextMessageRender,
     MediaMessageRender,
     ErrorMessageRender,
-	MessageTool
+	MessageTool,
+	CallMessageRender
   },
   props: {
     source: Object,
@@ -111,18 +114,24 @@ export default {
       type: Boolean,
       default: false,
     },
+	index:{
+		type: Number,
+		default: -1,
+	},
     isPreview: Boolean,
     isActive: Boolean,
 	isshowTool:{
 		type: Boolean,
 		default: false,
-	}
+	},
   },
   data() {
     return {
       timer: null,
       conversationID: "",
-	  parseMessageByType:parseMessageByType
+	  parseMessageByType:parseMessageByType,
+	  customType: 0,
+	  callRenderTypes:  [CustomType.CallingReject,CustomType.CallingCancel,CustomType.CallingHungup ]
     };
   },
   mounted() {
@@ -137,6 +146,21 @@ export default {
     isSingle() {
       return this.storeCurrentConversation.conversationType === SessionType.Single;
     },
+	isSender2(){
+		if(this.source.contentType == 110){
+			let data = JSON.parse(this.source.customElem.data)
+			if(this.callRenderTypes.includes(data.customType)){
+				
+				if( this.storeSelfInfo.userID == data.inviterUserID  ){
+					return true;
+				}else{
+					return false;
+				}
+			}
+		}else{
+			return this.storeSelfInfo.userID == this.source.sendID
+		}
+	},
     formattedMessageTime() {
       return formatMessageTime(this.source.sendTime);
     },
@@ -144,7 +168,7 @@ export default {
       return textRenderTypes.includes(this.source.contentType);
     },
     showMediaRender() {
-      return mediaRenderTypes.includes(this.source.contentType) || this.source.contentType==110;
+      return mediaRenderTypes.includes(this.source.contentType) ;
     },
     getNoticeContent() {
       const isNoticeMessage = noticeMessageTypes.includes(
@@ -175,7 +199,22 @@ export default {
       this.$store.getters.storeCurrentConversation.conversationID;
   },
   methods: {
-	
+	  longclick(){
+		  this.$emit('longclick', this.index)
+	  },
+	getshowCustomMessage(types){
+		if(this.source.contentType == 110){
+			let data = JSON.parse(this.source.customElem.data)
+			this.customType = data.customType;
+			if(types.includes(this.customType) && this.customType != 0){
+				return true;
+			}else{
+				return false;
+			}
+		}else{
+			return false
+		}
+	},
     navigate(link) {
       this.showInfo(link.href);
     },

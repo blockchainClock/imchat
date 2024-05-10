@@ -6,7 +6,7 @@ const state = {
   historyMessageList: [],
   previewImageList: [],
   hasMoreMessage: true,
-  quoteMessage: undefined,
+  quoteMessage: undefined
 };
 
 const mutations = {
@@ -85,9 +85,11 @@ const actions = {
         ]);
       }
     }
-
+	
+		console.log('================cancle', message)
     commit("SET_HISTORY_MESSAGE_LIST", [...state.historyMessageList, message]);
   },
+ 
   updateOneMessage(
     { commit, state },
     {
@@ -101,8 +103,12 @@ const actions = {
     const idx = tmpList.findIndex(
       (msg) => msg.clientMsgID === message.clientMsgID,
     );
+	
     if (idx !== -1) {
-      if (type === UpdateMessageTypes.Overall) {
+		
+	  if (type === UpdateMessageTypes.CallMessage){
+		  tmpList[idx] = message;
+	  }else if (type === UpdateMessageTypes.Overall) {
         if (message.contentType === MessageType.PictureMessage && isSuccess) {
           const imageList = filterPreviewImage([message]);
           if (imageList.length > 0) {

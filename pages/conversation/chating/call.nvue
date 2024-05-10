@@ -14,10 +14,12 @@
 		</view>
 		<view class="video-head" v-if="!connected&&!channel.isAudio">
 			<image class="avatar" :src="channinfo.avatar" mode="aspectFill"></image>
-			<view class="flex-sub around" style="height: 180rpx;margin-left: 20rpx;">
-				<text class="text-white font-36">{{channinfo.userName}}</text>
-				<text class="text-white font-26" v-if="to&&!connected">正在等待对方接受邀请......</text>
-			</view>
+			<!-- <image class="avatar" src="@/static/images/logo.png" mode="aspectFill"></image> -->
+			
+			<text class="text-white font-36">{{channinfo.userName}}</text>
+			<view style="height: 30px;"></view>
+			<text class="text-white font-26" v-if="to&&!connected">正在等待对方接受邀请......</text>
+			
 		</view>
 		<view class="bottom">
 			<view class="row around" v-if="connected">
@@ -160,8 +162,11 @@
 			this.token = uni.getStorageSync('videoToken');
 			let channinfo = JSON.parse(options.chainnInfo)
 			this.channinfo = channinfo;
+			this.to = channinfo.to ? channinfo.to : false;
 			this.channel.channelId = channinfo.conversationID;
-			console.log('room info.............',this.token, options.chainId)
+			this.channel.isAudio = channinfo.mediaType =='audio' ? true : false;
+			
+			console.log('room info.............',channinfo)
 			this.bellCtx.loop = true
 			this.bellCtx.src = '/static/voice/bell.mp3'
 		
@@ -316,13 +321,13 @@
 							clearInterval(this.timer)
 							if(this.to){
 								//离开房间就将持久化消息发出
-								this.channel.msg.extras.duration = this.duration
-								this.chat.send(this.channel.msg).then(()=>{
-									this.channel.msg.status = 'success';
-								}).catch((e)=>{
-									this.channel.msg.status = 'error';
-									this.channel.msg.errMsg = e.message
-								})
+								// this.channel.msg.extras.duration = this.duration
+								// this.chat.send(this.channel.msg).then(()=>{
+								// 	this.channel.msg.status = 'success';
+								// }).catch((e)=>{
+								// 	this.channel.msg.status = 'error';
+								// 	this.channel.msg.errMsg = e.message
+								// })
 								// this.saveConversationMap()
 							}
 							uni.navigateBack()
@@ -333,9 +338,7 @@
 						event:'UserEnableVideo',
 						handle:(uid,enabled)=>{
 							console.log("UserEnableVideo",uid,enabled)
-							if(uid==this.uid&&!enabled){
-								this.switchAudio()
-							}
+							this.switchAudio()
 						}
 					},
 					{
@@ -503,6 +506,7 @@
 					this.channel.msg.content = '[语音通话]'
 					this.channel.msg.extras.type="voice"
 				}
+				this.channel.isAudio = true;
 				// this.setChannel({
 				// 	...this.channel,
 				// 	isAudio:true
@@ -659,12 +663,19 @@
 	}
 	.video-head{
 		position: absolute;
-		top: 300rpx;
+		top: 240rpx;
 		left: 0;
 		right: 0;
 		padding-left: 30rpx;
-		flex-direction: row;
-		align-items: flex-start;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		// flex-direction: row;
+		// align-items: flex-start;
+	}
+	.video-head view{
+		text-align: center;
 	}
 	.avatar{
 		width:180rpx;

@@ -61,7 +61,7 @@ import {getRtcConnectData} from "@/api/imApi.js"
 			this.customData = JSON.parse( options.data)
 			console.log('options.data',this.customData )
 			uni.$on('call' + CustomType.CallingCancel,()=>{
-				this.refuse()
+				uni.navigateBack();
 			})
 			player.loopPlay('/static/voice/bell.mp3');
 			// this.vibrateTimer = setInterval(vibrateLong,1500)

@@ -90,7 +90,9 @@ export default {
       // init
 	  uni.$on('callsend',(data)=>{
 		  console.log('customType,params, userid',data)
-		  callEvent(data.customType,data, data.userID,()=>{})
+		  callEvent(data.customType,data, data.userID,()=>{
+			  uni.navigateBack()
+		  })
 	  })
       const kickHander = (message) => {
         toastWithCallback(message, () => {
@@ -820,6 +822,13 @@ export default {
 		  }else {
 			  console.log('call' + customData.customType)
 			  uni.$emit('call' + customData.customType)
+		  }
+		 
+		  if(customData.customType == CustomType.CallingReject ||
+		  	customData.customType == CustomType.CallingCancel ||
+		  	customData.customType == CustomType.CallingHungup
+		  ){
+		  	 this.pushNewMessage(newServerMsg)
 		  }
 		  return;
 	  }

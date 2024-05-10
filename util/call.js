@@ -7,9 +7,10 @@ import IMSDK, {
 	  SessionType,
 	} from "openim-uniapp-polyfill";
 import { mapGetters, mapActions } from "vuex";
+import store from "@/store";
 import { CustomType } from "@/constant/im";
 import { parseMessageByType, offlinePushInfo } from "@/util/imCommon";
-
+import { UpdateMessageTypes } from "@/constant";
 export const callEvent = async(customType,params, userid, callBack)=>{
 	try{
 		console.log('kaishi', params)
@@ -48,13 +49,21 @@ export const callEvent = async(customType,params, userid, callBack)=>{
 		  message,
 		  offlinePushInfo,
 		}).then(({ data }) => {
+			
+			if(customType == CustomType.CallingReject ||
+				customType == CustomType.CallingCancel ||
+				customType == CustomType.CallingHungup
+			){
+				store.dispatch("message/pushNewMessage", data)
+			}
+			
 			 callBack()
 			 
 		}).catch(res=>{
 			console.log(res)
 		})
 	}catch(e){
-		console.log(e)
+		console.log('error',e)
 		//TODO handle the exception
 	}
 }

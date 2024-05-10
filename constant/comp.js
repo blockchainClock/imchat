@@ -4,8 +4,8 @@ export const AddGroupQrCodePrefix = "io.openim.app/joinGroup/";
 export const ChatingFooterActionTypes = {
   Album: "Album",
   Camera: "Camera",
-  Video: "VideoCall",
-  Audio: "AudioCall",
+  Video: "video",
+  Audio: "audio",
 };
 
 
@@ -37,6 +37,7 @@ export const ContactChooseTypes = {
 export const UpdateMessageTypes = {
   Overall: "Overall",
   KeyWords: "KeyWords",
+  CallMessage: "CallMessage"
 };
 
 export const SmsUserFor = {

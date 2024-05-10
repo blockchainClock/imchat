@@ -7,18 +7,20 @@
       <view v-if="loadMoreStatus !== 'nomore'">
         <u-loadmore nomoreText="" :status="loadMoreStatus" />
       </view>
-      <view v-for="(item, index) in storeHistoryMessageList" :key="item.clientMsgID" v-if="getshow(item)" >
+      <view v-for="(item, index) in storeHistoryMessageList" :key="item.clientMsgID" v-if="getshowCustomMessage(item)" >
         <view v-if="getTimeLine" class="time_gap_line">
           {{ getTimeLine(item, storeHistoryMessageList[index - 1]) }}
         </view>
 		
-		<view  @longtap="longclick(index)">
+		<view >
 			<view v-if="item.contentType == 2101" style="text-align: center;font-size: 10px;">{{item.senderNickname}}撤回一条消息</view>
 			<message-item-render
 				:mutipleCheckVisible="mutipleCheckVisible"
-			   :isshowTool="longclickIndex == index"
+				:isshowTool = "longclickIndex == index"
+			    @longclick="longclick"
+				:index="index"
 				@messageItemRender="messageItemRender"
-			  :source="item" 
+			  :source="item"
 			  :isSender="item.sendID === storeCurrentUserID" />
 		</view>
         
@@ -46,6 +48,7 @@ import { SendMessageFailedType } from "@/constant";
 import MessageItemRender from "./MessageItem/index.vue";
 import { MessageStatus } from "openim-uniapp-polyfill";
 
+import { CustomType } from "@/constant/im";
 export default {
   name: "",
   components: {
@@ -142,10 +145,10 @@ export default {
         this.checkInitHeight();
       }
     },
-	getshow(itemdata){
+	getshowCustomMessage(itemdata){
 		if(itemdata.contentType == 110){
 			let data = JSON.parse(itemdata.customElem.data)
-			if(data.customType == 202 || data.customType ==203 || data.customType ==204){
+			if(data.customType == CustomType.CallingCancel || data.customType ==CustomType.CallingHungup || data.customType ==CustomType.CallingReject){
 				return true;
 			}else{
 				return false;

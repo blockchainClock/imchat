@@ -258,7 +258,8 @@ export const secFormat = (sec) => {
   let h;
   let s;
   h = Math.floor(sec / 60);
-  s = sec % 60;
+  s = Math.floor(sec % 60);
+  if(h == 0) return s + "s";
   h += "";
   s += "";
   h = h.length === 1 ? "0" + h : h;

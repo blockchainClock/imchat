@@ -56,12 +56,12 @@ export default {
         }, {
           idx: 2,
           type: ChatingFooterActionTypes.Video,
-          title: "语音通话",
+          title: "视频通话",
           icon: require("static/images/chating_action_camera.png"),
         },{
           idx: 3,
           type: ChatingFooterActionTypes.Audio,
-          title: "视频通话",
+          title: "语音通话",
           icon: require("static/images/chating_action_camera.png"),
         },
       ],
@@ -105,43 +105,45 @@ export default {
 			  uni.setStorageSync('videoToken',url.token )
 			  let params = messagedata.data;
 			  params.avatar = this.storeCurrentConversation.faceURL;
-			  params.userName = this.storeCurrentConversation.userID;
+			  params.userName = this.storeCurrentConversation.showName;
 			  params.sendID = this.storeSelfInfo.userID;
+			  params.to = this.storeCurrentConversation.userID;
 			  uni.navigateTo({
 			  	url:'/pages/conversation/chating/call?chainnInfo=' + JSON.stringify(params)
 			  })
 		})
 	},
     async actionClick(action) {
+		console.log('bar///////////',action.type)
+		// return;
       switch (action.type) {
         case ChatingFooterActionTypes.Album:
+			this.$emit("prepareMediaMessage", action.type);
+		     break;
 		case ChatingFooterActionTypes.Audio:
-		
-			console.log('this.storeSelfInfo.userID', this.storeSelfInfo.userID,this.storeCurrentConversation.conversationID)
 			let data  = await getRtcConnectData(
 			  this.storeCurrentConversation.conversationID,
 			  this.storeSelfInfo.userID
 			);
-			let channinfo = {
-				conversationID: this.storeCurrentConversation.conversationID,
-				userName: this.storeCurrentConversation.showName,
-				avatar: this.storeCurrentConversation.faceURL
-			}
-			// console.log(JSON.stringify({url:data.serverUrl, token:data.token}))
-			uni.navigateTo({
-				url:'/pages/conversation/chating/liveCall?data=' + JSON.stringify({url:data.serverUrl, token:data.token})
-			})
+			this.sendMessage(ChatingFooterActionTypes.Audio, data)
+			break;
+			// let channinfo = {
+			// 	conversationID: this.storeCurrentConversation.conversationID,
+			// 	userName: this.storeCurrentConversation.showName,
+			// 	avatar: this.storeCurrentConversation.faceURL
+			// }
+			// uni.navigateTo({
+			// 	url:'/pages/conversation/chating/liveCall?data=' + JSON.stringify({url:data.serverUrl, token:data.token})
+			// })
 		case ChatingFooterActionTypes.Video:
 			
 			let data2  = await getRtcConnectData(
 			  this.storeCurrentConversation.conversationID,
 			  this.storeSelfInfo.userID
 			);
-			console.log('/////////',data2, this.storeCurrentConversation.conversationID,
-			  this.storeSelfInfo.userID)
-			  
 			this.sendMessage(ChatingFooterActionTypes.Video, data2)
 			
+			break;
         case ChatingFooterActionTypes.Camera:
           this.$emit("prepareMediaMessage", action.type);
           break;

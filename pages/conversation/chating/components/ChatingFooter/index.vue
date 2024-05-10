@@ -1,12 +1,17 @@
 <template>
   <view class="">
 	  <!-- <button @click="startCall">语音</button> -->
+	
     <view class="forbidden_footer" v-if="getPlaceholder.length > 0">
       <image style="margin-right: 8rpx" src="/static/images/forbidden_footer.png" />
       <text>{{ getPlaceholder }}</text>
     </view>
     <view v-else :style="{ 'pointer-events': getPlaceholder ? 'none' : 'auto' }">
       <view class="chat_footer">
+		<view @click="changeMike">
+			<image class="mike-btn"  v-if="mike.show"  src="/static/images/chating_footer_audio.png" ></image>
+			<image class="mike-btn"  v-else src="/static/images/chating_footer_audio_recording.png" ></image>
+		</view>
         <view class="input_content">
           <CustomEditor :placeholder="getPlaceholder" class="custom_editor" ref="customEditor" @ready="editorReady"
             @focus="editorFocus" @blur="editorBlur" @input="editorInput" />
@@ -23,18 +28,42 @@
           <image v-show="hasContent" @click="sendTextMessage" src="@/static/images/send_btn.png" alt=""
             srcset="" />
         </view>
+		
+		
+		
       </view>
+	  <view class="mike-wrap area-b" :class="{show:mike.show}" >
+	  	<view class="mask" :class="{running:mike.running || !mike.running}" @tap="hideMike">
+	  		
+	  	</view>
+	  	<view class="mike-box">
+	  		<view class="mike-tip">
+	  			{{mike.running?`松开即可发送，上划取消 ${mike.second}″`:'按住说话'}}
+	  		</view>
+	  		<view 
+	  			@touchstart="voiceStart" 
+	  			@touchmove.stop="voiceMove"
+	  			@touchend="voiceEnd" 
+	  			class="mike-circle cuIcon-voicefill"
+	  			:class="{running:mike.running,cancel:mike.cancel}"
+	  		>
+	  		</view>
+	  	</view>
+	  </view>
       <chating-action-bar @sendMessage="sendMessage" @prepareMediaMessage="prepareMediaMessage"
         v-show="actionBarVisible" />
       <u-action-sheet :safeAreaInsetBottom="true" round="12" :actions="actionSheetMenu" @select="selectClick"
         :closeOnClickOverlay="true" :closeOnClickAction="true" :show="showActionSheet" @close="showActionSheet = false">
       </u-action-sheet>
     </view>
+	
+	
   </view>
 </template>
 
 <script>
 import { mapGetters, mapActions } from "vuex";
+import permision from "@/util/permission.js";
 import { formatInputHtml, getPurePath, html2Text, getPicInfo, getFileType, getVideoSnshot, base64toFile, uploadForm, getFileSize } from "@/util/common";
 import { parseMessageByType, offlinePushInfo } from "@/util/imCommon";
 import {
@@ -52,13 +81,13 @@ import IMSDK, {
 import UParse from "@/components/gaoyia-parse/parse.vue";
 import CustomEditor from "./CustomEditor.vue";
 import ChatingActionBar from "./ChatingActionBar.vue";
-
+const recorderManager = uni.getRecorderManager();
 const needClearTypes = [
   MessageType.TextMessage,
   MessageType.AtTextMessage,
   MessageType.QuoteMessage,
 ];
-
+const systemInfo = uni.getSystemInfoSync()
 const albumChoose = [
   {
     name: "图片",
@@ -101,6 +130,15 @@ export default {
       isInputFocus: false,
       actionSheetMenu: [],
       showActionSheet: false,
+	  mike:{
+	  	show:false,
+	  	running:false ,
+	  	cancel:false, 
+	  	startTime:0,
+	  	startY:0, 
+	  	timer:null,
+	  	second:0,
+	  },
     };
   },
   computed: {
@@ -163,6 +201,37 @@ export default {
   mounted() {
     // this.setSendMessageListener();
     this.setKeyboardListener();
+	recorderManager.onStart(()=>{
+		console.log("开始录音了")
+		this.mike.startTime = Date.now()
+		this.mike.running = true
+		this.mike.cancel = false
+		this.mike.second = 0
+		this.mike.timer = setInterval(()=>{
+			this.mike.second ++
+		},1000)
+	})
+	recorderManager.onStop(({
+		tempFilePath
+	}) => {
+		try{
+			this.mike.show = false;
+			const long = Date.now() - this.mike.startTime;
+			if (this.mike.cancel) {
+				return toast('取消录音')
+			}
+			if (long < 1000) {
+				return toast('说话时间太短')
+			}
+			this.sendVoice(tempFilePath, long)
+		}finally{
+			this.mike.running = false
+			this.mike.cancel = false
+			this.mike.second = 0
+			this.mike.startTime = 0
+			clearInterval(this.mike.timer)
+		}
+	});
   },
   beforeDestroy() {
     // this.disposeSendMessageListener();
@@ -181,10 +250,59 @@ export default {
           .exec();
       });
     },
-	startCall(){
-		uni.navigateTo({
-			url:'/pages/conversation/chating/imcall'
-		})
+	openMike(){
+		this.foot = 'mike'
+		this.mike.show = true
+	},
+	changeMike(){
+		this.mike.show = !this.mike.show 
+	},
+	hideMike(){
+		this.foot = ''
+		this.mike.show = false
+	},
+	async voiceStart({
+		changedTouches
+	}) {
+		console.log('触摸开始')
+		const touche = changedTouches[0];
+		this.mike.startY = touche.clientY
+		console.log(systemInfo.platform)
+		if(systemInfo.platform=='android'){
+			await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+		}
+		// #ifndef H5
+		recorderManager.start()
+		// #endif
+	},
+	async voiceMove({
+		changedTouches
+	}) {
+		const touche = changedTouches[0];
+		if (this.mike.startY - touche.clientY > 50) {
+			this.mike.cancel = true;
+		} else {
+			this.mike.cancel = false;
+		}
+	},
+	async voiceEnd() {
+		console.log('触摸结束')
+		// #ifndef H5
+		recorderManager.stop()
+		// #endif
+	},
+	async sendVoice(file, long) { 
+		
+		let path = getPurePath(file);
+		const message = await IMSDK.asyncApi(
+		  IMMethods.CreateSoundMessageFromFullPath,
+		  IMSDK.uuid(),
+		  {
+		    soundPath:path,
+		    duration: long,
+		  }
+		);
+		this.sendMessage(message);
 	},
     async createTextMessage() {
       let message = "";
@@ -305,10 +423,11 @@ export default {
     prepareMediaMessage(type) {
       if (type === ChatingFooterActionTypes.Album) {
         this.actionSheetMenu = [...albumChoose];
-      } else {
+		this.showActionSheet = true;
+      } else if(type === ChatingFooterActionTypes.Camera) {
         this.actionSheetMenu = [...cameraChoose];
+		this.showActionSheet = true;
       }
-      this.showActionSheet = true;
     },
 
     // from comp
@@ -588,10 +707,79 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+	
+
+.mike-wrap{
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		z-index: 101;
+		display: flex;
+		width: 100%;
+		height: 100vh;
+		
+		flex-direction: column;
+		transform: translateY(200%);
+		&.show{
+			transform: translateY(0%);
+			.mike-box{
+				transform: translateY(0%);
+			}
+		}
+		.mask{
+			flex: 1;
+			&.running{
+				background-color: rgba($color: #000000, $alpha: 0.2);
+			}
+		}
+		.mike-box{
+			height: 400rpx;
+			background-color: #FFFFFF;
+			transform: translateY(100%);
+			transition: transform 300ms ease-out;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			position: relative;
+		}
+		.mike-tip{
+			position: absolute;
+			top: 30rpx;
+			left: 50%;
+			transform: translateX(-50%);
+			font-size: 28rpx;
+			color: #999999;
+		}
+		.mike-circle{
+			width: 200rpx;
+			height: 200rpx;
+			background-color: #F5F5F5;
+			border-radius: 50%;
+			line-height: 200rpx;
+			text-align: center;
+			font-size: 100rpx;
+			color: #0081ff;
+			&.running{
+				background-color: #0081ff;
+				color: #FFFFFF;
+			}
+			&.cancel{
+				background-color: #e54d42;
+				color: #FFFFFF;
+			}
+		}
+	}	
+
 .custom_editor {
   img {
     vertical-align: sub;
   }
+}
+.mike-btn{
+	width:25px ;
+	height: 25px;
 }
 .reply-content{
 	background:#fff;
@@ -612,7 +800,7 @@ export default {
 }
 .forbidden_footer {
   width: 100%;
-  height: 112rpx;
+  min-height: 112rpx;
   color: #8e9ab0;
   display: flex;
   flex-direction: row;
