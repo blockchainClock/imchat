@@ -62,6 +62,7 @@ const actions = {
       ]);
       commit("SET_HAS_MORE_MESSAGE", !data.isEnd && messages.length === 20);
     } catch (e) {
+		console.log('err', e)
       commit("SET_HISTORY_MESSAGE_LIST", []);
     }
     return {

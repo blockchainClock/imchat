@@ -59,6 +59,7 @@ const actions = {
   },
   getBlacklist({ commit }) {
     IMSDK.asyncApi(IMSDK.IMMethods.GetBlackList, uuidv4()).then(({ data }) => {
+		console.log('获取黑名单列表',data)
       commit("SET_BLACK_LIST", data);
     });
   },

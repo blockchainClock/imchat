@@ -3,7 +3,7 @@
 	  <!-- <button @click="startCall">语音</button> -->
 	
     <view class="forbidden_footer" v-if="getPlaceholder.length > 0">
-      <image style="margin-right: 8rpx" src="/static/images/forbidden_footer.png" />
+      <image style="margin-right: 8rpx; width:40rpx;height:40rpx;" src="/static/images/forbidden_footer.png" />
       <text>{{ getPlaceholder }}</text>
     </view>
     <view v-else :style="{ 'pointer-events': getPlaceholder ? 'none' : 'auto' }">
@@ -50,7 +50,7 @@
 	  		</view>
 	  	</view>
 	  </view>
-      <chating-action-bar @sendMessage="sendMessage" @prepareMediaMessage="prepareMediaMessage"
+      <chating-action-bar  @sendMessage="sendMessage" @prepareMediaMessage="prepareMediaMessage"
         v-show="actionBarVisible" />
       <u-action-sheet :safeAreaInsetBottom="true" round="12" :actions="actionSheetMenu" @select="selectClick"
         :closeOnClickOverlay="true" :closeOnClickAction="true" :show="showActionSheet" @close="showActionSheet = false">

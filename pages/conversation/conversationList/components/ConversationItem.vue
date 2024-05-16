@@ -23,7 +23,7 @@
               v-if="messagePrefix"
               class="lastest_msg_prefix"
               :class="{ lastest_msg_prefix_active: needActivePerfix }"
-              >{{ messagePrefix }}</text
+              >{{ messagePrefix }}11</text
             >
             <text class="lastest_msg_content">{{ latestMessage }}</text>
           </view>
@@ -108,6 +108,7 @@ export default {
         parsedMessage = JSON.parse(this.source.latestMsg);
       } catch (e) {}
       if (!parsedMessage) return "";
+	  
       return parseMessageByType(parsedMessage);
     },
     needActivePerfix() {

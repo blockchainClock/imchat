@@ -2,8 +2,8 @@
   <view class="page_container">
     <view class="login">
       <view class="logo">
-        <image style="width: 65px;height: 66px;" src="@/static/images/logo.png" alt="" />
-        <view class="title" @click="toConfig">欢迎使用OpenIM</view>
+        <image style="width: 65px;height: 66px;border-radius: 10px;margin-bottom: 20px;" src="/static/logo.png" alt="" />
+        <view class="title" @click="toConfig">为打造内部通讯工具而造</view>
       </view>
       <u-form
         class="loginForm"
@@ -292,7 +292,8 @@ export default {
       font-size: 34rpx;
       font-weight: 600;
       margin-bottom: 116rpx;
-      color: $u-primary;
+      // color: $u-primary;
+	  color: #000;
     }
 
     .logo {

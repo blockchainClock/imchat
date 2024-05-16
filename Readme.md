@@ -18,7 +18,7 @@
 
 <br>
 
-OpenIM Uniapp Demo 是一个基于本地插件、OpenIM Server 和 Uniapp 的开源即时通讯应用程序。它演示了如何使用 OpenIM 将即时消息功能快速集成到任何单一应用程序中。
+KeChat Uniapp  是一个基于本地插件、OpenIM Server 和 Uniapp 的开源即时通讯应用程序。它演示了如何使用 OpenIM 将即时消息功能快速集成到任何单一应用程序中。
 
 注意：demo 只是用于演示 SDK 的引入与使用，并不是不是一个完整的应用。
 

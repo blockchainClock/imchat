@@ -54,7 +54,7 @@
     </u-form>
     <view class="btn">
       <u-button :loading="loading" type="primary" @click="doNext">
-        进入OpenIM
+        进入KeChat
       </u-button>
     </view>
   </view>

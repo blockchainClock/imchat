@@ -1,6 +1,6 @@
 {
-    "name" : "IM-UCB",
-    "appid" : "__UNI__F845BC8",
+    "name" : "KeChat",
+    "appid" : "__UNI__0FBF079",
     "description" : "",
     "versionName" : "toc_base_open 3.3.4",
     "versionCode" : 334,
@@ -21,7 +21,8 @@
             "Camera" : {},
             "Record" : {},
             "Geolocation" : {},
-            "Maps" : {}
+            "Maps" : {},
+            "Push" : {}
         },
         "distribute" : {
             "android" : {
@@ -46,7 +47,8 @@
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
-                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
+                    "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
+                    "<uses-permission android:name=\"android.permission.PUSH\"/>"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
                 "minSdkVersion" : 21
@@ -70,15 +72,28 @@
                 "maps" : {},
                 "share" : {},
                 "statics" : {},
-                "speech" : {}
+                "speech" : {},
+                "push" : {
+                    "unipush" : {
+                        "icons" : {
+                            "small" : {
+                                "ldpi" : "static/logo.png",
+                                "mdpi" : "static/logo.png",
+                                "hdpi" : "static/logo.png",
+                                "xhdpi" : "static/logo.png",
+                                "xxhdpi" : "static/logo.png"
+                            }
+                        }
+                    }
+                }
             },
             "splashscreen" : {
                 "androidStyle" : "default",
                 "iosStyle" : "common",
                 "android" : {
-                    "hdpi" : "static/logo.png",
-                    "xhdpi" : "static/logo.png",
-                    "xxhdpi" : "static/logo.png"
+                    "hdpi" : "",
+                    "xhdpi" : "",
+                    "xxhdpi" : ""
                 }
             },
             "icons" : {
@@ -115,6 +130,20 @@
             }
         },
         "nativePlugins" : {
+            "Agora-RTC" : {
+                "__plugin_info__" : {
+                    "name" : "Agora音视频插件",
+                    "description" : "Agora官方维护的音视频插件，并且在GitHub上开源，欢迎大家积极参与问题反馈和代码贡献",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=3720",
+                    "android_package_name" : "uni.UNI0FBF079",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "3720",
+                    "parameters" : {}
+                }
+            },
             "Tuoyun-OpenIMSDK" : {
                 "__plugin_info__" : {
                     "name" : "OpenIM SDK",
@@ -126,20 +155,6 @@
                     "isCloud" : true,
                     "bought" : 1,
                     "pid" : "6577",
-                    "parameters" : {}
-                }
-            },
-            "Agora-RTC" : {
-                "__plugin_info__" : {
-                    "name" : "Agora音视频插件",
-                    "description" : "Agora官方维护的音视频插件，并且在GitHub上开源，欢迎大家积极参与问题反馈和代码贡献",
-                    "platforms" : "Android,iOS",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=3720",
-                    "android_package_name" : "com.hnkns.kechat",
-                    "ios_bundle_id" : "com.hnkns.kechat",
-                    "isCloud" : true,
-                    "bought" : 1,
-                    "pid" : "3720",
                     "parameters" : {}
                 }
             }

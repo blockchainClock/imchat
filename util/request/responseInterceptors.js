@@ -8,7 +8,7 @@ module.exports = (vm) => {
       /* 对响应成功做点什么 可使用async await 做异步操作*/
       const data = response.data;
       // 自定义参数
-	  console.log('requests:' + response.config.fullPath,data.data)
+	  console.log('response:' , response)
       const custom = response.config?.custom;
       if (data.errCode !== 0 && data.code !== 0) {
         // 服务端返回的状态码不等于200，则reject()

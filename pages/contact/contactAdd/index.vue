@@ -34,7 +34,7 @@ export default {
         {
           idx: 0,
           title: "创建群聊",
-          desc: "创建群聊，全面使用OpenIM",
+          desc: "创建群聊，全面使用KeChat",
           icon: require("static/images/contact_add_create_group.png"),
         },
         {

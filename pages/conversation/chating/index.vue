@@ -35,7 +35,7 @@ export default {
     return {
       listHeight: 0,
       footerOutsideFlag: 0,
-      initLoading: true,
+      initLoading: false,
       back2Tab: false,
       timer: null,
     };
@@ -117,7 +117,7 @@ export default {
     },
   },
   onBackPress() {
-    return true;
+    return false;
   },
   beforeDestroy() {
     uni.switchTab({

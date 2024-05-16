@@ -62,11 +62,11 @@ export default {
           title: "账号设置",
           icon: require("static/images/profile_menu_account.png"),
         },
-        {
-          idx: 3,
-          title: "关于我们",
-          icon: require("static/images/profile_menu_about.png"),
-        },
+        // {
+        //   idx: 3,
+        //   title: "关于我们",
+        //   icon: require("static/images/profile_menu_about.png"),
+        // },
         {
           idx: 4,
           title: "退出登录",

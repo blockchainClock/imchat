@@ -28,7 +28,7 @@
           </view>
         </u-input>
       </u-form-item>
-      <u-form-item v-if="isRegister" prop="invitationCode" label="邀请码">
+      <!-- <u-form-item v-if="isRegister" prop="invitationCode" label="邀请码">
         <u-input
           v-model="userInfo.invitationCode"
           border="surround"
@@ -38,7 +38,7 @@
           clearable
         >
         </u-input>
-      </u-form-item>
+      </u-form-item> -->
     </u-form>
     <view class="action_btn">
       <u-button

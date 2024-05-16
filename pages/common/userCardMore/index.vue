@@ -10,7 +10,7 @@
       <user-info-row-item lable="加入黑名单" arrow>
         <u-switch
           asyncChange
-          :loading="blackLoading"
+          :loading="false"
           size="20"
           :value="isBlacked"
           @change="change"
@@ -39,17 +39,30 @@
 </template>
 
 <script>
-import IMSDK from "openim-uniapp-polyfill";
+import IMSDK, {
+	  GroupMemberRole,
+	  GroupStatus,
+	  IMMethods,
+	  MessageStatus,
+	  MessageType,
+	  SessionType,
+	} from "openim-uniapp-polyfill";
 import CustomNavBar from "@/components/CustomNavBar/index.vue";
 import UserInfoRowItem from "../userCard/components/UserInfoRowItem.vue";
+import { mapGetters, mapActions } from "vuex";
 export default {
   components: {
     CustomNavBar,
     UserInfoRowItem,
   },
+  computed: {
+    ...mapGetters([
+      "storeSelfInfo",
+    ]),
+	},
   data() {
     return {
-      blackLoading: false,
+      blackLoading: true,
       sourceInfo: {},
       showConfirm: false,
     };
@@ -66,16 +79,55 @@ export default {
   onLoad(options) {
     const { sourceInfo } = options;
     this.sourceInfo = JSON.parse(sourceInfo);
+	console.log( '黑名单信息',this.sourceInfo)
   },
   methods: {
-    change(isBlack) {
+	  ...mapActions("contact", [
+	    "pushNewBlack"
+	  ]),
+    async change() {
+		let isBlack = this.isBlacked
       this.blackLoading = true;
-      const funcName = isBlack
-        ? IMSDK.IMMethods.AddBlack
-        : IMSDK.IMMethods.RemoveBlack;
-      IMSDK.asyncApi(funcName, IMSDK.uuid(), this.sourceInfo.userID)
-        .catch((err) => this.showToast("操作失败"))
-        .finally(() => (this.blackLoading = false));
+		  const funcName = !isBlack
+		    ? IMSDK.IMMethods.AddBlack
+		    : IMSDK.IMMethods.RemoveBlack;
+		console.log('黑名单信息',funcName, this.sourceInfo)
+		if(funcName == IMSDK.IMMethods.AddBlack){
+			IMSDK.asyncApi(
+				funcName, 
+				IMSDK.uuid(), 
+				{"userID": this.sourceInfo.userID}
+				
+			).then((data) => {
+				this.showToast("操作成功");
+				console.log(this.sourceInfo.userID,data,funcName)
+				this.blackLoading = false;
+				this.$store.dispatch("contact/getBlacklist");
+			})
+			.catch((err) => {
+				console.log('黑名单错误',err, this.sourceInfo.userID)
+				this.blackLoading = false
+			});
+		}else{
+			IMSDK.asyncApi(
+				funcName, 
+				IMSDK.uuid(), 
+				this.sourceInfo.userID
+				
+			).then((data) => {
+				this.showToast("操作成功");
+				console.log(this.sourceInfo.userID,data,funcName)
+				this.blackLoading = false;
+				this.$store.dispatch("contact/getBlacklist");
+			})
+			.catch((err) => {
+				console.log('黑名单错误',err, this.sourceInfo.userID)
+				this.blackLoading = false
+			});
+		}
+	  	
+		
+      
     },
     confirmRemove() {
       IMSDK.asyncApi(

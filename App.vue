@@ -14,6 +14,8 @@ import { checkUpdateFormPgyer } from "@/api/checkUpdate";
 import NotificationUtil from "./util/notification";
 import { CustomType } from "@/constant/im";
 import { callEvent } from "@/util/call.js";
+import permision from "@/util/permission.js";
+// const syczuanNotice = uni.requireNativePlugin("syczuan-notice");
 let cacheConversationList = [];
 let updateDownloadTask = null;
 let notificationIntance = null;
@@ -23,7 +25,53 @@ export default {
   onLaunch: function () {
     console.log("App Launch");
     // Igexin.turnOnPush();
-
+    // permision.requestAndroidPermission('android.permission.PUSH');
+	// syczuanNotice.send(
+	//         {
+	//           // 唯一通知id,用于更新、取消通知
+	//           noticeId: 1,
+	//           // 通知渠道id 需唯一
+	//           channalId: "Default_id",
+	//           // 通知渠道名称 需唯一
+	//           channalName: "Default",
+	//           // 通知标题
+	//           title: "通知标题",
+	//           // 通知内容
+	//           content: "通知内容",
+	//           // 通知栏附加文本
+	//           subText: "通知栏附加文本",
+	//           // 大图标
+	//           largeIcon: true,
+	//           // 小图标背景颜色
+	//           smallColor: "#000000",
+	//           // 大图(禁止传空字符)
+	//           bigPicture: "网络地址、绝对路径、static/image目录下",
+	//           // 点击是否自动关闭通知
+	//           autoCancel: true,
+	//           // 毫秒时间戳 默认显示当前时间
+	//           noticeTime: true,
+	//           // 通知优先级
+	//           import: 0,
+	//           // 常驻状态栏
+	//           ongoing: false,
+	//           // 未读通知数 0不显示
+	//           badge: 1,
+	//           // 延迟通知时间(单位s)
+	//           trigger: 1,
+	//           // 通知长文本
+	//           bigText: "",
+	//           // 自定义按钮
+	//           customButton: "Custom",
+	//           // 自定义数据
+	//           payload: {
+	//             pages: "/pages/index/test",
+	//             type: "default",
+	//           },
+	//         },
+	//         (e) => {
+	//           console.log(e);
+	//         }
+	//       );
     this.$store.dispatch("user/getAppConfig");
     this.launchCheck();
     this.setGlobalIMlistener();
@@ -162,6 +210,7 @@ export default {
       // message
       const newMessagesHandler = ({ data }) => {
 		  console.log('新消息', data)
+		  
         if (this.storeIsSyncing) {
           return;
         }
@@ -302,6 +351,7 @@ export default {
         friendInfoChangeHandler,
       );
       IMSDK.subscribe(IMSDK.IMEvents.OnFriendAdded, friendAddedHandler);
+      
       IMSDK.subscribe(IMSDK.IMEvents.OnFriendDeleted, friendDeletedHander);
 
       // blacklist
@@ -716,7 +766,7 @@ export default {
       const config = {
         progress,
         isPause,
-        title: "OpenIM",
+        title: "KeChat",
         content: `${content}${progress}%`,
         intentList: [["type", "updateProgress"]],
       };
@@ -725,7 +775,7 @@ export default {
     downloadFinish(buildVersion) {
       notificationIntance.clearNotification(1000);
       notificationIntance.compProgressNotification({
-        title: "OpenIM",
+        title: "KeChat",
         content: "下载完成",
         notifyId: 1001,
       });
@@ -816,6 +866,8 @@ export default {
 		  uni.setStorageSync('videoToken',customData.token ) //
 		  // uni.setStorageSync('videoUser',customData.inviterUserID ) 
 		  if(customData.customType == CustomType.CallingInvite){
+			  
+			  // plus.push.createMessage(newServerMsg.senderNickname + '邀请您语音通话', '', '邀请您语音通话' ); 
 			  uni.navigateTo({
 				  url: '/pages/conversation/chating/receive?data=' + encodeURIComponent(JSON.stringify(customData))
 			  })

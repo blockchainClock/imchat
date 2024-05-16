@@ -41,30 +41,31 @@ export default {
 	},
   data() {
     return {
-      actionList: [
-        {
-          idx: 0,
-          type: ChatingFooterActionTypes.Album,
-          title: "相册",
-          icon: require("static/images/chating_action_image.png"),
-        },
-        {
-          idx: 1,
-          type: ChatingFooterActionTypes.Camera,
-          title: "拍摄",
-          icon: require("static/images/chating_action_camera.png"),
-        }, {
-          idx: 2,
-          type: ChatingFooterActionTypes.Video,
-          title: "视频通话",
-          icon: require("static/images/chating_action_camera.png"),
-        },{
-          idx: 3,
-          type: ChatingFooterActionTypes.Audio,
-          title: "语音通话",
-          icon: require("static/images/chating_action_camera.png"),
-        },
-      ],
+		  actionFlag: true,
+		  actionList: [
+			{
+			  idx: 0,
+			  type: ChatingFooterActionTypes.Album,
+			  title: "相册",
+			  icon: require("static/images/chating_action_image.png"),
+			},
+			{
+			  idx: 1,
+			  type: ChatingFooterActionTypes.Camera,
+			  title: "拍摄",
+			  icon: require("static/images/chating_action_camera.png"),
+			}, {
+			  idx: 2,
+			  type: ChatingFooterActionTypes.Video,
+			  title: "视频通话",
+			  icon: require("static/images/chating_action_camera.png"),
+			},{
+			  idx: 3,
+			  type: ChatingFooterActionTypes.Audio,
+			  title: "语音通话",
+			  icon: require("static/images/chating_action_camera.png"),
+			},
+		  ],
     };
   },
   methods: {
@@ -102,6 +103,7 @@ export default {
 		  message,
 		  offlinePushInfo,
 		}).then(({ data }) => {
+			
 			  uni.setStorageSync('videoToken',url.token )
 			  let params = messagedata.data;
 			  params.avatar = this.storeCurrentConversation.faceURL;
@@ -114,8 +116,8 @@ export default {
 		})
 	},
     async actionClick(action) {
-		console.log('bar///////////',action.type)
-		// return;
+		if(!this.actionFlag) return;
+		this.actionFlag = false
       switch (action.type) {
         case ChatingFooterActionTypes.Album:
 			this.$emit("prepareMediaMessage", action.type);
@@ -150,6 +152,7 @@ export default {
         default:
           break;
       }
+	  this.actionFlag = true;
     },
   },
 };

@@ -136,10 +136,15 @@ export default {
       this.queryList()
     },
     async queryList(isFirstPage = false) {
-      await this.$store.dispatch(
-        "conversation/getConversationList",
-        isFirstPage,
-      );
+		try{
+			await this.$store.dispatch(
+			  "conversation/getConversationList",
+			  isFirstPage,
+			);
+			
+		}catch(e){
+			//TODO handle the exception
+		}
       this.triggered = false;
       this._freshing = false;
     },

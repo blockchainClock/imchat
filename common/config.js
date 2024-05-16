@@ -2,22 +2,23 @@
 // const configUrl = 'https://web.rentsoft.cn/complete_admin'
 // const apiUrl = 'https://web.rentsoft.cn/api'
 // const wsUrl = 'wss://web.rentsoft.cn/msg_gateway'
-
-const registerUrl = 'http://192.168.43.36:10008'
-const configUrl = 'http://192.168.43.36:10009'
-const apiUrl = 'http://192.168.43.36:10002'
+// 119.8.104.83
+// 192.168.43.36
+const registerUrl = 'http://119.8.104.83:10008'
+const configUrl = 'http://119.8.104.83:10009'
+const apiUrl = 'http://119.8.104.83:10002'
 
 let wsUrl = ''
 
 // #ifdef APP-PLUS
-wsUrl = 'ws://192.168.43.36:10001'
+wsUrl = 'ws://119.8.104.83:10001'
 // #endif
 
 // #ifdef H5 || MP-WEIXIN
-wsUrl = 'ws://192.168.43.36:10001'
+wsUrl = 'ws://119.8.104.83:10001'
 // #endif
 
-const version = 'OpenIM-Uni-Demo'
+const version = ''
 
 // 高德地图web api key  用于根据经纬度生成快照  当前key已绑定安卓包名  需要自行申请替换
 const AmapWebKey = "";

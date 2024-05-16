@@ -81,8 +81,8 @@
 				</view>
 			</view>
 		</view>
-		<view v-if="listData.length==0" class="flex-item-center"
-			style="font-size: 30rpx;color: #999999;padding-top: 80rpx;">暂无数据</view>
+		<!-- <view v-if="listData.length==0" class="flex-item-center" -->
+			<!-- style="font-size: 30rpx;color: #999999;padding-top: 80rpx;">暂无数据</view> -->
 		<image @tap="navReseaseTopic" src="/static/images/find/addGroup.png"
 			style="position: fixed;left: 50%;transform: translateX(-50%);height: 108rpx;width: 108rpx;bottom: calc(50px + 40rpx);"
 			mode=""></image>

@@ -14,7 +14,8 @@ export const CustomType = {
 
 export const SendMessageFailedType = {
   Unknown: 302,
-  Blacked: 600,
+ // Blacked: 600,
+  Blacked: 1302,
   NotFriend: 601,
 };
 

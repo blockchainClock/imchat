@@ -337,8 +337,11 @@
 						//对方切换成语音通话
 						event:'UserEnableVideo',
 						handle:(uid,enabled)=>{
-							console.log("UserEnableVideo",uid,enabled)
-							this.switchAudio()
+							console.log("UserEnableVideo",this.uid, uid,enabled)
+							// this.switchAudio()
+							if(uid==this.uid&&!enabled){
+								this.switchAudio()
+							}
 						}
 					},
 					{
@@ -500,13 +503,10 @@
 				
 			},
 			async switchAudio(){//切换语音通话
+				this.channel.isAudio = true;
 				await this.engine.disableVideo()
 				await this.engine.setEnableSpeakerphone(false)
-				if(this.to){
-					this.channel.msg.content = '[语音通话]'
-					this.channel.msg.extras.type="voice"
-				}
-				this.channel.isAudio = true;
+				
 				// this.setChannel({
 				// 	...this.channel,
 				// 	isAudio:true

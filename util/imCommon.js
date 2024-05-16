@@ -12,7 +12,6 @@ import IMSDK, {
 } from "openim-uniapp-polyfill";
 import dayjs from "dayjs";
 import { isThisYear } from "date-fns";
-
 import calendar from "dayjs/plugin/calendar";
 import relativeTime from "dayjs/plugin/relativeTime";
 import updateLocale from "dayjs/plugin/updateLocale";
@@ -154,13 +153,26 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
       ? "你"
       : user.nickname;
   };
-  switch (pmsg.contentType) {
+  
+  switch (pmsg.contentType) { //CustomType.CallingInvite
     case MessageType.TextMessage:
       return `${pmsg.senderNickname}：${pmsg.textElem.content}`;
     case MessageType.AtTextMessage:
       return `${pmsg.senderNickname}：${parseAt(pmsg.atTextElem, true)}`;
     case MessageType.PictureMessage:
       return `${pmsg.senderNickname}：[图片]`;
+	case MessageType.CustomMessage:
+		let customData = JSON.parse(pmsg.customElem.data)
+		if(customData.mediaType == 'video'){
+			return `${pmsg.senderNickname}：[视频通话]`;
+		}else if(customData.mediaType == 'audio'){
+			return `${pmsg.senderNickname}：[语音通话]`;
+		}
+		return ''
+		break;
+	case MessageType.VoiceMessage:
+	  console.log('MessageType.VoiceMessage',MessageType.VoiceMessage)
+	  return `${pmsg.senderNickname}：[语音消息]`;
     case MessageType.VideoMessage:
       return `${pmsg.senderNickname}：[视频]`;
       return `${pmsg.senderNickname}：[表情]`;
@@ -286,7 +298,10 @@ export const tipMessaggeFormat = (msg, currentUserID) => {
 
   switch (msg.contentType) {
     case MessageType.FriendAdded:
+	
       return `你们已经是好友了~`;
+	case MessageType.OnBlackAdded:
+	  return '你已被加入黑名单';
     case MessageType.GroupCreated:
       const groupCreatedDetail = JSON.parse(msg.notificationElem.detail);
       const groupCreatedUser = groupCreatedDetail.opUser;

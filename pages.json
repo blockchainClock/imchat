@@ -319,24 +319,26 @@
     "backgroundColor": "#ffffff",
     "height": "55px",
     "list": [
-	{
-	  "pagePath": "pages/find/find",
-	  "iconPath": "/static/images/tabbar/find.png",
-	  "selectedIconPath": "/static/images/tabbar/find_a.png",
-	  "text": "发现"
-	},
-      {
-        "pagePath": "pages/conversation/conversationList/index",
-        "iconPath": "/static/images/tabbar/chat.png",
-        "selectedIconPath": "/static/images/tabbar/chat_a.png",
-        "text": "消息"
-      },
+		
+		  {
+		    "pagePath": "pages/conversation/conversationList/index",
+		    "iconPath": "/static/images/tabbar/chat.png",
+		    "selectedIconPath": "/static/images/tabbar/chat_a.png",
+		    "text": "消息"
+		  },
+	
       {
         "pagePath": "pages/contact/index/index",
         "iconPath": "/static/images/tabbar/friend.png",
         "selectedIconPath": "/static/images/tabbar/friend_a.png",
         "text": "好友"
       },
+	  {
+	    "pagePath": "pages/find/find",
+	    "iconPath": "/static/images/tabbar/find.png",
+	    "selectedIconPath": "/static/images/tabbar/find_a.png",
+	    "text": "发现"
+	  },
       {
         "pagePath": "pages/profile/index/index",
         "iconPath": "/static/images/tabbar/my.png",

@@ -95,19 +95,20 @@ export default {
     },
     sendFailedDesc() {
       return (message) => {
-        if (
-          message.status === MessageStatus.Failed &&
-          message.errCode === SendMessageFailedType.Blacked
-        ) {
+		
+		if(message.status === MessageStatus.Failed 
+			&&message.errCode === SendMessageFailedType.Blacked) {
           return "消息已发出，但被对方拒收了";
-        }
-        if (
+        }else if (
           message.status === MessageStatus.Failed &&
           message.errCode === SendMessageFailedType.NotFriend
         ) {
           return "对方开启了好友验证，你还不是他（她）好友。请先发送好友验证，对方验证通过后，才能聊天。";
-        }
-        return "";
+        }else if(message.status === MessageStatus.Failed){
+			return "发送失败"
+		}
+		
+        
       };
     },
     getTimeLine() {
@@ -125,7 +126,10 @@ export default {
       };
     },
   },
+  onLoad() {
+  },
   mounted() {
+	 
 	uni.$on('resetTool',()=>{
 		this.longclickIndex = -1
 	})
@@ -159,6 +163,8 @@ export default {
 		
 	},
     async loadMessageList(isLoadMore = false) {
+		
+		console.log('initsuccess', 1111111);
       this.messageLoadState.loading = true;
       const lastMsgID = this.storeHistoryMessageList[0]?.clientMsgID;
       const options = {
@@ -177,7 +183,7 @@ export default {
           this.$emit("initSuccess");
         }
       } catch (e) {
-        console.log(e);
+        console.log('initfail',e);
       }
       this.$nextTick(function () {
         if (isLoadMore && lastMsgID) {
@@ -208,6 +214,7 @@ export default {
       }
     },
     scrollToBottom(isInit = false, isRecv = false) {
+	  console.log('scorlltobottom', this.needScoll, isRecv, isInit)
       if (isRecv && !this.needScoll) {
         return;
       }
@@ -232,6 +239,7 @@ export default {
       });
     },
     scrollToAnchor(auchor) {
+	 console.log('滚动框',auchor)
       this.$nextTick(function () {
         this.scrollIntoView = auchor;
       });
