@@ -78,21 +78,24 @@ export const formatInputHtml = (html) => {
   const customDataReg = /data-custom=".+"/;
   text = text.replace(imgReg, (img) => {
     if (img.includes('class="at_el"')) {
+		
+	  console.log('@',img.match(customDataReg)[0].slice(13, -1).split("&"))
       const atInfoArr = img
         .match(customDataReg)[0]
         .slice(13, -1)
-        .split("&amp;");
+        .split("&");
       atUserList.push({
-        atUserID: atInfoArr[0].slice(7),
-        groupNickname: atInfoArr[1].slice(15),
+        atUserID: atInfoArr[0],
+        groupNickname: atInfoArr[1],
       });
-      return `@${atInfoArr[0].slice(7)} `;
+      return `@${atInfoArr[0]} `;
     }
     if (img.includes('class="emoji_el"')) {
       return img.match(customDataReg)[0].slice(23, -1);
     }
     return "";
   });
+  text = text.replace('</img>', '')
   return {
     text,
     atUserList,

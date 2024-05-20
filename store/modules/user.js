@@ -18,6 +18,7 @@ const state = {
   appConfig: {},
   authData: {},
   isSyncing: false,
+ 
   rootFontSize: uni.getStorageSync("RootFontSize") || "14px",
 };
 

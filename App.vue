@@ -6,6 +6,7 @@ import IMSDK, {
   MessageType,
   SessionType,
 } from "openim-uniapp-polyfill";
+    const floatWin = uni.requireNativePlugin('Ba-FloatWinNotification')
 import config from "./common/config";
 import { getDbDir, toastWithCallback } from "@/util/common.js";
 import { conversationSort } from "@/util/imCommon";
@@ -13,65 +14,19 @@ import { PageEvents, UpdateMessageTypes } from "@/constant";
 import { checkUpdateFormPgyer } from "@/api/checkUpdate";
 import NotificationUtil from "./util/notification";
 import { CustomType } from "@/constant/im";
-import { callEvent } from "@/util/call.js";
+import { callEvent,notify } from "@/util/call.js";
 import permision from "@/util/permission.js";
-// const syczuanNotice = uni.requireNativePlugin("syczuan-notice");
+import {formatInputHtml} from "@/util/common.js"
+const syczuanNotice = uni.requireNativePlugin("syczuan-notice");
 let cacheConversationList = [];
 let updateDownloadTask = null;
 let notificationIntance = null;
 let pausing = false;
-
+console.log('version', floatWin)
 export default {
   onLaunch: function () {
     console.log("App Launch");
-    // Igexin.turnOnPush();
-    // permision.requestAndroidPermission('android.permission.PUSH');
-	// syczuanNotice.send(
-	//         {
-	//           // 唯一通知id,用于更新、取消通知
-	//           noticeId: 1,
-	//           // 通知渠道id 需唯一
-	//           channalId: "Default_id",
-	//           // 通知渠道名称 需唯一
-	//           channalName: "Default",
-	//           // 通知标题
-	//           title: "通知标题",
-	//           // 通知内容
-	//           content: "通知内容",
-	//           // 通知栏附加文本
-	//           subText: "通知栏附加文本",
-	//           // 大图标
-	//           largeIcon: true,
-	//           // 小图标背景颜色
-	//           smallColor: "#000000",
-	//           // 大图(禁止传空字符)
-	//           bigPicture: "网络地址、绝对路径、static/image目录下",
-	//           // 点击是否自动关闭通知
-	//           autoCancel: true,
-	//           // 毫秒时间戳 默认显示当前时间
-	//           noticeTime: true,
-	//           // 通知优先级
-	//           import: 0,
-	//           // 常驻状态栏
-	//           ongoing: false,
-	//           // 未读通知数 0不显示
-	//           badge: 1,
-	//           // 延迟通知时间(单位s)
-	//           trigger: 1,
-	//           // 通知长文本
-	//           bigText: "",
-	//           // 自定义按钮
-	//           customButton: "Custom",
-	//           // 自定义数据
-	//           payload: {
-	//             pages: "/pages/index/test",
-	//             type: "default",
-	//           },
-	//         },
-	//         (e) => {
-	//           console.log(e);
-	//         }
-	//       );
+	
     this.$store.dispatch("user/getAppConfig");
     this.launchCheck();
     this.setGlobalIMlistener();
@@ -84,11 +39,18 @@ export default {
   },
   onShow: function () {
     console.log("App Show");
-    IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), false);
+	floatWin.hide()
+	 IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), false);
+	
   },
   onHide: function () {
     console.log("App Hide");
-    IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
+	
+    // IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
+ 
+
+	
+	
   },
   computed: {
     ...mapGetters([
@@ -196,7 +158,7 @@ export default {
       IMSDK.subscribe(IMSDK.IMEvents.OnSyncServerStart, syncStartHandler);
       IMSDK.subscribe(IMSDK.IMEvents.OnSyncServerFinish, syncFinishHandler);
       IMSDK.subscribe(IMSDK.IMEvents.OnSyncServerFailed, syncFailedHandler);
-
+	   
       // self
       const selfInfoUpdateHandler = ({ data }) => {
         this.$store.commit("user/SET_SELF_INFO", {
@@ -209,13 +171,26 @@ export default {
 
       // message
       const newMessagesHandler = ({ data }) => {
-		  console.log('新消息', data)
 		  
         if (this.storeIsSyncing) {
           return;
         }
         data.forEach(this.handleNewMessage);
       };
+	  const newOfflineMessage = ({ data} ) => {
+			console.log('新的离线消息')
+			uni.vibrateLong();
+		  	let noticedata = notify;
+		  	noticedata.content =  '11'
+		  	syczuanNotice.send(
+		  			notify
+		  		   ,
+		  			(e) => {
+		  			  console.log('',e);
+		  			}
+		  	);
+	  }
+	  
       const c2cReadReceiptHandler = ({ data: receiptList }) => {
         if (receiptList[0].userID !== this.storeCurrentConversation.userID) {
           return;
@@ -302,8 +277,23 @@ export default {
           clientMsgID: revokedMessage.clientMsgID
         })
       };
+	  
+	  IMSDK.subscribe(IMSDK.IMEvents.OnRecvOfflineNewMessage, newOfflineMessage);
 
       IMSDK.subscribe(IMSDK.IMEvents.OnRecvNewMessages, newMessagesHandler);
+	  // IMSDK.subscribe(IMSDK.IMEvents.OnRecvOfflineNewMessages, (data)=>{
+		 //  console.log('新离线消息', data)
+	  // 	uni.vibrateLong();
+	  // 	let noticedata = notify;
+	  // 	noticedata.content =  '11'
+	  // 	syczuanNotice.send(
+			// notify
+		 //   ,
+			// (e) => {
+			//   console.log('',e);
+			// }
+	  // 	);
+	  // });
       IMSDK.subscribe(
         IMSDK.IMEvents.OnRecvC2CReadReceipt,
         c2cReadReceiptHandler,
@@ -644,6 +634,7 @@ export default {
       // #ifdef APP-PLUS
       plus.globalEvent.addEventListener("newintent", (e) => {
         console.log(plus.runtime.arguments);
+		  floatWin.hide()
         let launchData = {};
         try {
           launchData = JSON.parse(plus.runtime.arguments);
@@ -856,8 +847,49 @@ export default {
       // 	}
       // })
     },
+	
+	
+	async newMessagesHandlerOffline (data){
+			  console.log('新的离线消息', data)
+			 
+	  data.forEach(this.handleNewMessageOffline);
+	},
+	async handleNewMessageOffline(newServerMsg){
+		
+		if(newServerMsg.contentType == 110){
+			let customData = JSON.parse(newServerMsg.customElem.data);
+			if(customData.customType == CustomType.CallingInvite){
+				uni.vibrateLong();
+				floatWin.show({
+						title: "kechat",
+						content: newServerMsg.senderNickname + ': 你有一条新消息' ,
+						time: "1s",
+						iconBase64: "data:image/png;base64,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"
+					},
+					(res) => {
+				});
+				setTimeout(()=>{
+					floatWin.hide();
+				}, 6000)
+			}
+		}else{
+			uni.vibrateLong();
+			let noticedata = notify;
+			noticedata.content = newServerMsg.senderNickname + ''
+			syczuanNotice.send(
+					notify
+			       ,
+			        (e) => {
+			          console.log('',e);
+			        }
+			);
+		}
+		
+	},
     async handleNewMessage(newServerMsg) {
 		// 自定义消息
+		console.log('新消息')
+		uni.vibrateLong();
 	  if(newServerMsg.contentType == 110){
 		  let customData = JSON.parse(newServerMsg.customElem.data);
 		  customData.avatar = newServerMsg.senderFaceUrl;
@@ -865,9 +897,20 @@ export default {
 		  customData.sendID = newServerMsg.sendID;
 		  uni.setStorageSync('videoToken',customData.token ) //
 		  // uni.setStorageSync('videoUser',customData.inviterUserID ) 
+		  
 		  if(customData.customType == CustomType.CallingInvite){
-			  
-			  // plus.push.createMessage(newServerMsg.senderNickname + '邀请您语音通话', '', '邀请您语音通话' ); 
+			 uni.vibrateLong();
+			 floatWin.show({
+			 		title: "kechat",
+			 		content: ': 你有一条新消息' ,
+			 		time: "1s",
+			 		iconBase64: "data:image/png;base64,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"
+			 	},
+			 	(res) => {
+			 });
+			 setTimeout(()=>{
+			 	floatWin.hide();
+			 }, 6000)
 			  uni.navigateTo({
 				  url: '/pages/conversation/chating/receive?data=' + encodeURIComponent(JSON.stringify(customData))
 			  })

@@ -38,7 +38,29 @@ function judgeIosPermissionPush() {
   plus.ios.deleteObject(UIApplication);
   return result;
 }
-
+function tongzhiPerssiom(){
+	var main = plus.android.runtimeMainActivity();  
+	var pkName = main.getPackageName();  
+	var NotificationManagerCompat = plus.android.importClass("android.support.v4.app.NotificationManagerCompat");  
+	var packageNames = NotificationManagerCompat.from(main);  
+	if (packageNames.areNotificationsEnabled()) {  
+		console.log('已开启通知权限');  
+	}else{  
+		uni.showModal({  
+			title: '通知权限开启提醒',  
+			content: '您还没有开启通知权限,无法接收到消息通知,是否前往设置',  
+			showCancel: false,  
+			success: function (res) {  
+				if (res.confirm) {  
+					var Intent = plus.android.importClass('android.content.Intent');  
+					var intent = new Intent('android.settings.APP_NOTIFICATION_SETTINGS');//可设置表中所有Action字段  
+					intent.putExtra('android.provider.extra.APP_PACKAGE', pkName);  
+					main.startActivity(intent);  
+				}  
+			}  
+		});  
+	}
+}
 // 判断定位权限是否开启
 function judgeIosPermissionLocation() {
   var result = false;
@@ -274,4 +296,5 @@ module.exports = {
   requestAndroidPermission: requestAndroidPermission,
   checkSystemEnableLocation: checkSystemEnableLocation,
   gotoAppPermissionSetting: gotoAppPermissionSetting,
+  tongzhiPerssiom: tongzhiPerssiom
 };

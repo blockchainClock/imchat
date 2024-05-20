@@ -10,9 +10,10 @@
     <my-avatar
       @longpress="atUser"
       @click="showInfo"
+	  @longtap="messageAt"
       size="42"
       :desc="source.senderNickname"
-      :src="isSender2 ? storeSelfInfo.faceURL :  storeCurrentConversation.faceURL"
+      :src="isSender2 ? storeSelfInfo.faceURL : source.groupID ? source.senderFaceUrl :  storeCurrentConversation.faceURL"
     />
     <view class="message_container">
       <view class="message_sender" :style="{ 'flex-direction': !isSender2 ? 'row-reverse' : 'row' }" >
@@ -199,9 +200,12 @@ export default {
       this.$store.getters.storeCurrentConversation.conversationID;
   },
   methods: {
-	  longclick(){
+	longclick(){
 		  this.$emit('longclick', this.index)
-	  },
+	},
+	messageAt(){
+		uni.$emit('atUser',{userData:this.source})
+	},
 	getshowCustomMessage(types){
 		if(this.source.contentType == 110){
 			let data = JSON.parse(this.source.customElem.data)

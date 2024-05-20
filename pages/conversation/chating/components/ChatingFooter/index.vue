@@ -307,6 +307,7 @@ export default {
     async createTextMessage() {
       let message = "";
       const { text, atUserList } = formatInputHtml(this.inputHtml);
+	  console.log('发送消息',atUserList, text)
       if (atUserList.length === 0) {
         if (this.storeQuoteMessage) {
           message = await IMSDK.asyncApi(
@@ -315,7 +316,7 @@ export default {
             {
               text,
               message: this.storeQuoteMessage,
-            },
+            }
           );
         } else {
           message = await IMSDK.asyncApi(

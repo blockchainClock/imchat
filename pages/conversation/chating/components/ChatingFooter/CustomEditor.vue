@@ -47,6 +47,27 @@ export default {
       lastStr: "",
     };
   },
+   mounted() {
+	let _this = this;
+	  //data.senderNickname
+  	uni.$on('atUser',async (res)=>{
+		let oldContent = ''
+		await this.editorCtx.getContents({
+			success(data){
+				
+				oldContent = data.text == '\n' ? '' :  data.html;
+				let sendhtml = `${oldContent}<img class="at_el" data-custom="${res.userData.sendID}&${res.userData.senderNickname}">@${res.userData.senderNickname}</img>`;
+				_this.editorCtx.setContents({
+					html: sendhtml,
+					fail(err){
+						console.log('//////',err)
+					}
+				})
+				_this.$emit('input',{ detail: {html:sendhtml}} )
+			}
+		})
+	})
+  },
   methods: {
     editorReady() {
       uni

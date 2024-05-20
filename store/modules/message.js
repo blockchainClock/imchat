@@ -6,7 +6,7 @@ const state = {
   historyMessageList: [],
   previewImageList: [],
   hasMoreMessage: true,
-  quoteMessage: undefined
+  quoteMessage: undefined,
 };
 
 const mutations = {

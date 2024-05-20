@@ -39,18 +39,22 @@
     </view>
 
     <u-toast ref="uToast"></u-toast>
+	<Update v-if="showUpdate" @closeUpdate="closeUpdate"></Update>
   </view>
 </template>
 
 <script>
 import IMSDK from "openim-uniapp-polyfill";
 import MyAvatar from "@/components/MyAvatar/index.vue";
+import Update from "../../profile/update/index.vue"
 export default {
   components: {
     MyAvatar,
+	Update
   },
   data() {
     return {
+	  showUpdate:false,
       profileMenus: [
         {
           idx: 0,
@@ -62,15 +66,19 @@ export default {
           title: "账号设置",
           icon: require("static/images/profile_menu_account.png"),
         },
-        // {
-        //   idx: 3,
-        //   title: "关于我们",
-        //   icon: require("static/images/profile_menu_about.png"),
-        // },
+        {
+          idx: 3,
+          title: "关于我们",
+          icon: require("static/images/profile_menu_about.png"),
+        },
         {
           idx: 4,
           title: "退出登录",
           icon: require("static/images/profile_menu_logout.png"),
+        },{
+          idx: 5,
+          title: "升级版本",
+          icon: require("static/images/chating_footer_emoji.png"),
         },
       ],
     };
@@ -81,6 +89,9 @@ export default {
     },
   },
   methods: {
+	closeUpdate(){
+		  this.showUpdate = false;
+	},
     copy() {
       uni.setClipboardData({
         showToast: false,
@@ -138,6 +149,9 @@ export default {
             },
           });
           break;
+		case 5:
+			// 升级版本
+			this.showUpdate = true;
         default:
           break;
       }

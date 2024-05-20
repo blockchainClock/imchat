@@ -1,6 +1,6 @@
 {
     "name" : "KeChat",
-    "appid" : "__UNI__0FBF079",
+    "appid" : "__UNI__F845BC8",
     "description" : "",
     "versionName" : "toc_base_open 3.3.4",
     "versionCode" : 334,
@@ -22,7 +22,14 @@
             "Record" : {},
             "Geolocation" : {},
             "Maps" : {},
-            "Push" : {}
+            "Push" : {
+                "igexin" : {
+                    "appid" : "123456",
+                    "appkey" : "123456",
+                    "appsecret" : "123456"
+                }
+            },
+            "Barcode" : {}
         },
         "distribute" : {
             "android" : {
@@ -45,6 +52,7 @@
                     "<uses-permission android:name=\"android.permission.READ_PHONE_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.RECORD_AUDIO\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
+                    "<uses-permission android:name=\"android.permission.SYSTEM_ALERT_WINDOW\" />",
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
@@ -74,16 +82,10 @@
                 "statics" : {},
                 "speech" : {},
                 "push" : {
-                    "unipush" : {
-                        "icons" : {
-                            "small" : {
-                                "ldpi" : "static/logo.png",
-                                "mdpi" : "static/logo.png",
-                                "hdpi" : "static/logo.png",
-                                "xhdpi" : "static/logo.png",
-                                "xxhdpi" : "static/logo.png"
-                            }
-                        }
+                    "igexin" : {
+                        "appid" : "123456",
+                        "appkey" : "123456",
+                        "appsecret" : "123456"
                     }
                 }
             },
@@ -136,11 +138,53 @@
                     "description" : "Agora官方维护的音视频插件，并且在GitHub上开源，欢迎大家积极参与问题反馈和代码贡献",
                     "platforms" : "Android,iOS",
                     "url" : "https://ext.dcloud.net.cn/plugin?id=3720",
-                    "android_package_name" : "uni.UNI0FBF079",
-                    "ios_bundle_id" : "",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "com.hnkns.kechat",
                     "isCloud" : true,
                     "bought" : 1,
                     "pid" : "3720",
+                    "parameters" : {}
+                }
+            },
+            "TX-VideoTool" : {
+                "__plugin_info__" : {
+                    "name" : "获取本地和网络视频缩略图、封面  qq群：933785472",
+                    "description" : "一个方法轻松获取网络和本地封面图",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=5727",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "com.hnkns.kechat",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "5727",
+                    "parameters" : {}
+                }
+            },
+            "syczuan-notice" : {
+                "__plugin_info__" : {
+                    "name" : "Android iOS自定义本地通知",
+                    "description" : "创建本地通知，支持大图、通知等级设置等",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=13517",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "13517",
+                    "parameters" : {}
+                }
+            },
+            "Ba-FloatWinNotification" : {
+                "__plugin_info__" : {
+                    "name" : "悬浮窗-通知 Ba-FloatWinNotification",
+                    "description" : "Ba-FloatWinNotification 是一款定制的通知悬浮窗插件，有其他定制需要可联系作者。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=14258",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "14258",
                     "parameters" : {}
                 }
             },
@@ -150,7 +194,7 @@
                     "description" : "OpenIM：由IM技术专家打造的基于 Go 实现的即时通讯（IM）项目，从服务端到客户端SDK开源即时通讯（IM）整体解决方案，可以轻松替代第三方IM云服务，打造具备聊天、社交功能的app。",
                     "platforms" : "Android,iOS",
                     "url" : "https://ext.dcloud.net.cn/plugin?id=6577",
-                    "android_package_name" : "uni.UNI0FBF079",
+                    "android_package_name" : "",
                     "ios_bundle_id" : "",
                     "isCloud" : true,
                     "bought" : 1,
