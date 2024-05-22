@@ -26,13 +26,18 @@
 </template>
 
 <script>
-import { html2Text } from "@/util/common";
+import { mapGetters, mapActions } from "vuex";
+import { html2Text,formatInputHtml } from "@/util/common";
+import { parseAt } from "@/util/imCommon";
 export default {
   props: {
     placeholder: {
       type: String,
       default: "",
     },
+  },
+  computed: {
+    ...mapGetters(["storeAtUser"])
   },
   data() {
     return {
@@ -45,6 +50,7 @@ export default {
       insertImageFlag: null,
       insertAtFlag: null,
       lastStr: "",
+	  atContent:[],
     };
   },
    mounted() {
@@ -56,7 +62,10 @@ export default {
 			success(data){
 				
 				oldContent = data.text == '\n' ? '' :  data.html;
-				let sendhtml = `${oldContent}<img class="at_el" data-custom="${res.userData.sendID}&${res.userData.senderNickname}">@${res.userData.senderNickname}</img>`;
+				let sendhtml = `${oldContent}<img class="at_el" data-custom="${res.userData.sendID}&${res.userData.senderNickname}"></img>@${res.userData.senderNickname}`;
+				console.log('seting html',sendhtml)
+				const { text, atUserList } = formatInputHtml(sendhtml);
+				_this.addAtUser(atUserList)
 				_this.editorCtx.setContents({
 					html: sendhtml,
 					fail(err){
@@ -64,11 +73,13 @@ export default {
 					}
 				})
 				_this.$emit('input',{ detail: {html:sendhtml}} )
+				_this.lastStr = sendhtml;
 			}
 		})
 	})
   },
   methods: {
+	...mapActions("message", ["addAtUser", "clearAtUser"]),
     editorReady() {
       uni
         .createSelectorQuery()
@@ -141,20 +152,43 @@ export default {
     editorBlur() {
       this.$emit("blur");
     },
-    editorInput(e) {
-      let str = e.detail.html;
-      const oldArr = this.lastStr.split("");
-      let contentStr = str;
-      oldArr.forEach((str) => {
-        contentStr = contentStr.replace(str, "");
-      });
-      contentStr = html2Text(contentStr);
-      if (contentStr === "@") {
-        this.$emit("tryAt");
-      }
-      this.$emit("input", e);
-      this.lastStr = e.detail.html;
-    },
+	editorInput(e) {
+		let data = {
+				   text:e.detail.html,
+				   atUsersInfo: this.storeAtUser
+		}
+	   let str = e.detail.html;
+	   const oldArr = this.lastStr.split("");
+	   let contentStr = str;
+	   oldArr.forEach((str) => {
+	     contentStr = contentStr.replace(str, "");
+	   });
+	   contentStr = html2Text(contentStr);
+	   
+	   if (contentStr === "@") {
+	     this.$emit("tryAt");
+	   }
+	   // e.detail.html = this.lastStr +  e.detail.html
+	   
+	   	console.log('.///', e.detail.html)
+	   this.$emit("input", e);
+	   this.lastStr = e.detail.html;
+	},
+   //  editorInput(e) {
+   //    let str = e.detail.html;
+   //    const oldArr = this.lastStr.split("");
+   //    let contentStr = str;
+   //    oldArr.forEach((str) => {
+   //      contentStr = contentStr.replace(str, "");
+   //    });
+   //    contentStr = html2Text(contentStr);
+	  // console.log('.///', this.storeAtUser)
+   //    if (contentStr === "@") {
+   //      this.$emit("tryAt");
+   //    }
+   //    this.$emit("input", e);
+   //    this.lastStr = e.detail.html;
+   //  },
   },
 };
 </script>

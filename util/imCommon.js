@@ -101,6 +101,7 @@ export const parseAt = (atel, isParse = false) => {
     const member = atUserList.find(
       (user) => user.atUserID === match.slice(1, -1),
     );
+	console.log('member',member,atUserList, match )
     if (member && !isParse) {
       mstr = mstr.replace(
         match,
@@ -154,13 +155,19 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
       : user.nickname;
   };
   
-  switch (pmsg.contentType) { //CustomType.CallingInvite
+  switch (pmsg.contentType) { //CustomType.CallingInvite 
     case MessageType.TextMessage:
       return `${pmsg.senderNickname}：${pmsg.textElem.content}`;
+	  break;
+	case MessageType.QuoteMessage:
+	  return `${pmsg.senderNickname}：${pmsg.quoteElem.text}`;
+	  break;
     case MessageType.AtTextMessage:
       return `${pmsg.senderNickname}：${parseAt(pmsg.atTextElem, true)}`;
+	  break;
     case MessageType.PictureMessage:
       return `${pmsg.senderNickname}：[图片]`;
+	  break;
 	case MessageType.CustomMessage:
 		let customData = JSON.parse(pmsg.customElem.data)
 		if(customData.mediaType == 'video'){

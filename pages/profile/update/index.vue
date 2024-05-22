@@ -57,8 +57,8 @@
 				  msg:"新版本更新内容",
 				  force: 0,
 				  number: "版本号",
-				  ios:"https://game.bcclock.com/__UNI__F845BC8.wgt",
-				  android: "https://game.bcclock.com/__UNI__F845BC8.wgt"
+				  ios:"http://kechat.keynes.pro/__UNI__F845BC8.wgt",
+				  android: "http://kechat.keynes.pro/__UNI__F845BC8.wgt"
 				  
 			  }
 			}

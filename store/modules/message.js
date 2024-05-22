@@ -7,11 +7,15 @@ const state = {
   previewImageList: [],
   hasMoreMessage: true,
   quoteMessage: undefined,
+  atUser:[]
 };
 
 const mutations = {
   SET_HISTORY_MESSAGE_LIST(state, list) {
     state.historyMessageList = [...list];
+  },
+  SET_AT_USER(state, list) {
+    state.atUser = list;
   },
   SET_PREVIEW_IMAGE_LIST(state, list) {
     state.previewImageList = [...list];
@@ -72,6 +76,12 @@ const actions = {
   },
   pushNewPreviewImage({ state, commit }, url) {
     commit("SET_PREVIEW_IMAGE_LIST", [...state.previewImageList, url]);
+  },
+  addAtUser({ state, commit }, user){
+	  commit("SET_AT_USER", [...state.atUser,user[0]])
+  },
+  clearAtUser(){
+	  commit("SET_AT_USER", [])
   },
   pushNewMessage({ commit, state }, message) {
     if (

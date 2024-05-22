@@ -4,9 +4,15 @@
 // const wsUrl = 'wss://web.rentsoft.cn/msg_gateway'
 // 119.8.104.83
 // 192.168.43.36
-const registerUrl = 'http://119.8.104.83:10008'
-const configUrl = 'http://119.8.104.83:10009'
-const apiUrl = 'http://119.8.104.83:10002'
+const baseHttpUrl = 'http://119.8.104.83'
+const baseWsUrl = 'ws://119.8.104.83'
+
+const registerUrl = baseHttpUrl + ':10008' //chat.keynes.com
+const configUrl = baseHttpUrl + ':10009'  // chat-admin.keynes.com
+const apiUrl = baseHttpUrl + ':10002'  // im.keynes.com
+// const registerUrl = 'http://119.8.104.83:10008'
+// const configUrl = 'http://119.8.104.83:10009'
+// const apiUrl = 'http://119.8.104.83:10002'
 
 let wsUrl = ''
 

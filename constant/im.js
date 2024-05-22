@@ -9,7 +9,8 @@ export const CustomType = {
   CallingAccept: 201,
   CallingReject: 202,
   CallingCancel: 203,
-  CallingHungup: 204
+  CallingHungup: 204,
+  Meeting: 301
 };
 
 export const SendMessageFailedType = {

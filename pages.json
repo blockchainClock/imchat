@@ -22,9 +22,8 @@
         "navigationBarTitleText": "",
         "enablePullDownRefresh": false,
         "disableScroll": true,
-        "app-plus": {
-          "bounce": "none"
-        }
+		"navigationStyle": "custom"
+       
       }
     },
     {
@@ -305,6 +304,20 @@
 		}
 	},{
 		"path": "pages/conversation/chating/receive",
+		"style": {
+			"navigationBarTitleText": "%answer%",
+			"enablePullDownRefresh": false
+		}
+	
+	},{
+		"path": "pages/meeting/index/index",
+		"style": {
+			"navigationBarTitleText": "%answer%",
+			"enablePullDownRefresh": false
+		}
+	
+	},{
+		"path": "pages/meeting/joinMeeting/joinMeeting",
 		"style": {
 			"navigationBarTitleText": "%answer%",
 			"enablePullDownRefresh": false

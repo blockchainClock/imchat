@@ -23,9 +23,9 @@
               v-if="messagePrefix"
               class="lastest_msg_prefix"
               :class="{ lastest_msg_prefix_active: needActivePerfix }"
-              >{{ messagePrefix }}11</text
+              >{{ messagePrefix }}</text
             >
-            <!-- <text class="lastest_msg_content">{{ latestMessage }}</text> -->
+            <text class="lastest_msg_content">{{ latestMessage }}</text>
           </view>
         </view>
       </view>
@@ -208,9 +208,9 @@ export default {
 .conversation_item {
   @include btwBox();
   flex-direction: row;
-  padding: 12rpx 44rpx 20rpx;
+  padding: 12rpx 30rpx 20rpx;
   position: relative;
-
+  border-bottom: solid 1px rgba(0, 0, 0, 0.02);
   &_active {
     background-color: #f3f3f3;
   }
@@ -221,20 +221,20 @@ export default {
     .details {
       @include colBox(true);
       margin-left: 24rpx;
-      height: 46px;
+      height: 36px;
       color: $uni-text-color;
 
       .conversation_name {
         @include nomalEllipsis();
         max-width: 40vw;
-        font-size: 28rpx;
+        font-size: 30rpx;
       }
 
       .lastest_msg_wrap {
         display: flex;
         font-size: 24rpx;
-        margin-top: 10rpx;
-        color: #666;
+        margin-top: 0rpx;
+        color: #888;
 
         .lastest_msg_prefix {
           margin-right: 6rpx;

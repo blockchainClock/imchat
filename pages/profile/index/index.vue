@@ -79,7 +79,15 @@ export default {
           idx: 5,
           title: "升级版本",
           icon: require("static/images/chating_footer_emoji.png"),
-        },
+        },{
+          idx: 6,
+          title: "清除缓存",
+          icon: require("static/images/chating_footer_emoji.png"),
+        },{
+          idx: 7,
+          title: "会议",
+          icon: require("static/images/chating_footer_emoji.png"),
+        }
       ],
     };
   },
@@ -152,6 +160,22 @@ export default {
 		case 5:
 			// 升级版本
 			this.showUpdate = true;
+			break;
+		case 6:
+			// 清除缓存
+			IMSDK.asyncApi(
+				IMSDK.IMMethods.DeleteAllMsgFromLocal,
+				IMSDK.uuid()
+			).then(res=>{
+				uni.showToast({
+					title:'清除成功'
+				})
+			})
+			break
+		case 7:
+			uni.navigateTo({
+				url:'/pages/meeting/index/index'
+			})
         default:
           break;
       }

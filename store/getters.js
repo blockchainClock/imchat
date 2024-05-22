@@ -24,5 +24,6 @@ export default {
   storeAppConfig: (state) => state.user.appConfig,
   storeIsSyncing: (state) => state.user.isSyncing,
   storeAuthData: (state) => state.user.authData,
-  storeRootFontSize: (state) => state.user.rootFontSize
+  storeRootFontSize: (state) => state.user.rootFontSize,
+  storeAtUser: (state) => state.message.atUser
 };

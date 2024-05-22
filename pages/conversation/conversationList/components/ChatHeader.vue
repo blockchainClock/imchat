@@ -1,70 +1,79 @@
 <template>
-  <view class="chat_header">
-    <view class="self_info">
-      <my-avatar
-        :src="storeSelfInfo.faceURL"
-        :desc="storeSelfInfo.nickname"
-        size="46"
-      />
-      <view class="self_info_desc">
-        <view class="user_state">
-          <text class="nickname">{{ storeSelfInfo.nickname }}</text>
-          <view class="tag" v-if="storeIsSyncing">
-            <image
-              class="loading"
-              style="height: 24rpx; width: 24rpx"
-              src="@/static/images/loading.png"
-              alt=""
-            />
-            <text class="status">同步中</text>
-          </view>
-          <view class="tag" v-if="connectStart == 0">
-            <image
-              class="loading"
-              style="height: 24rpx; width: 24rpx"
-              src="@/static/images/loading.png"
-              alt=""
-            />
-            <text class="status">连接中</text>
-          </view>
-          <view class="err-tag" v-if="connectStart == -1">
-            <image
-              style="height: 24rpx; width: 24rpx"
-              src="@/static/images/sync_error.png"
-              alt=""
-            />
-            <text class="status">连接失败</text>
-          </view>
-        </view>
-      </view>
-    </view>
-    <view class="right_action">
-      <view class="call_icon"> </view>
-      <view @click="showMore" class="more_icon">
-        <image src="@/static/images/common_circle_add.png"></image>
-      </view>
-      <u-overlay
-        :show="moreMenuVisible"
-        @click="moreMenuVisible = false"
-        opacity="0"
-      >
-        <view
-          :style="{ top: popMenuPosition.top, right: popMenuPosition.right }"
-          class="more_menu"
-        >
-          <view
-            @click="clickMenu(item)"
-            v-for="item in moreMenus"
-            :key="item.idx"
-            class="menu_item"
-          >
-            <image :src="item.icon" mode=""></image>
-            <text>{{ item.title }}</text>
-          </view>
-        </view>
-      </u-overlay>
-    </view>
-  </view>
+	<view style="background: rgba(0, 0, 0, 0.05);">
+		<view class="chat_header">
+			  
+		  <view class="self_info" style="opacity: 0;width: 80rpx;overflow: hidden;">
+		    <my-avatar
+		      :src="storeSelfInfo.faceURL"
+		      :desc="storeSelfInfo.nickname"
+		      size="46"
+		    />
+		    <view class="self_info_desc">
+		      <view class="user_state">
+		        <text class="nickname">{{ storeSelfInfo.nickname }}</text>
+		        <view class="tag" v-if="storeIsSyncing">
+		          <image
+		            class="loading"
+		            style="height: 24rpx; width: 24rpx"
+		            src="@/static/images/loading.png"
+		            alt=""
+		          />
+		          <text class="status">同步中</text>
+		        </view>
+		        <view class="tag" v-if="connectStart == 0">
+		          <image
+		            class="loading"
+		            style="height: 24rpx; width: 24rpx"
+		            src="@/static/images/loading.png"
+		            alt=""
+		          />
+		          <text class="status">连接中</text>
+		        </view>
+		        <view class="err-tag" v-if="connectStart == -1">
+		          <image
+		            style="height: 24rpx; width: 24rpx"
+		            src="@/static/images/sync_error.png"
+		            alt=""
+		          />
+		          <text class="status">连接失败</text>
+		        </view>
+		      </view>
+		    </view>
+		  </view>
+			<view class="app-name">Kechat</view>
+			
+		  <view class="right_action">
+		    <view class="call_icon"> </view>
+		    <view @click="showMore" class="more_icon">
+		      <image src="@/static/images/common_circle_add.png"></image>
+		    </view>
+		    <u-overlay
+		      :show="moreMenuVisible"
+		      @click="moreMenuVisible = false"
+		      opacity="0"
+		    >
+		      <view
+		        :style="{ top: popMenuPosition.top, right: popMenuPosition.right }"
+		        class="more_menu"
+		      >
+		        <view
+		          @click="clickMenu(item)"
+		          v-for="item in moreMenus"
+		          :key="item.idx"
+		          class="menu_item"
+		        >
+		          <image :src="item.icon" mode=""></image>
+		          <text>{{ item.title }}</text>
+		        </view>
+		      </view>
+		    </u-overlay>
+		  </view>
+		</view>
+		<view class="search">
+			<input placeholder="搜索" />
+		</view>
+	</view>	
+  
 </template>
 
 <script>
@@ -200,12 +209,30 @@ export default {
     transform: rotate(360deg);
   }
 }
-
+ .search{
+	   padding: 0 20rpx 16rpx 20rpx;
+   }
+   .search input{
+	   background: #fff;
+	   border-radius: 3px;
+	   font-size: 28rpx;
+	   width:100%;
+	   line-height: 60rpx;
+	   height: 60rpx;
+	   text-align: center;
+   }
 .chat_header {
   @include btwBox();
-  padding: 36rpx 44rpx;
+  
+  padding: 0 44rpx 8rpx 44rpx;
   margin-top: var(--status-bar-height);
-
+   display: flex;
+   justify-content: space-between;
+   .app-name{
+	   font-size: 36rpx;
+	   font-weight: 500;
+   }
+  
   .self_info {
     @include btwBox();
 
@@ -294,15 +321,15 @@ export default {
       margin-right: 24rpx;
 
       image {
-        width: 56rpx;
-        height: 56rpx;
+        width: 50rpx;
+        height: 50rpx;
       }
     }
 
     .more_icon {
       image {
-        width: 56rpx;
-        height: 56rpx;
+        width: 45rpx;
+        height: 45rpx;
       }
     }
 

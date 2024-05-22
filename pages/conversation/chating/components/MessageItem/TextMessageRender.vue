@@ -32,7 +32,6 @@ export default {
         return this.message.quoteElem.text;
       }
       if (this.message.contentType === MessageType.AtTextMessage) {
-		  console.log('parseAt(this.message.atTextElem)',parseAt(this.message.atTextElem))
         return parseAt(this.message.atTextElem);
       }
       return parseLink(parseBr(this.message.textElem?.content));

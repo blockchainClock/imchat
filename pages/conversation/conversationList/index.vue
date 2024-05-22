@@ -13,6 +13,7 @@
       @refresherrestore="onRestore"
 			@scrolltolower="scrolltolower"
     >
+	<view style="height: 20rpx;"></view>
       <u-swipe-action
         ref="swipeWrapperRef"
         class="swipe_wrapper"
@@ -160,6 +161,7 @@ export default {
   @include colBox(false);
   height: 100vh;
   overflow-y: hidden;
+  
 }
 
 .conversation_search {

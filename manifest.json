@@ -24,9 +24,9 @@
             "Maps" : {},
             "Push" : {
                 "igexin" : {
-                    "appid" : "123456",
-                    "appkey" : "123456",
-                    "appsecret" : "123456"
+                    "appid" : "K2sHf8ttjSAC57AMDqNjP8",
+                    "appkey" : "8XJxTgqPtM94Saq7fQXqx1",
+                    "appsecret" : "572BJ9wwkc5QoTSlmYlIm8"
                 }
             },
             "Barcode" : {}
@@ -83,9 +83,9 @@
                 "speech" : {},
                 "push" : {
                     "igexin" : {
-                        "appid" : "123456",
-                        "appkey" : "123456",
-                        "appsecret" : "123456"
+                        "appid" : "K2sHf8ttjSAC57AMDqNjP8",
+                        "appkey" : "8XJxTgqPtM94Saq7fQXqx1",
+                        "appsecret" : "572BJ9wwkc5QoTSlmYlIm8"
                     }
                 }
             },

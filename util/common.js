@@ -79,7 +79,6 @@ export const formatInputHtml = (html) => {
   text = text.replace(imgReg, (img) => {
     if (img.includes('class="at_el"')) {
 		
-	  console.log('@',img.match(customDataReg)[0].slice(13, -1).split("&"))
       const atInfoArr = img
         .match(customDataReg)[0]
         .slice(13, -1)

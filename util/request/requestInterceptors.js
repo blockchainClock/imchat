@@ -10,6 +10,7 @@ module.exports = (vm) => {
 	  // console.log('config',config)
       // 可使用async await 做异步操作
       // 初始化请求拦截器时，会执行此方法，此时data为undefined，赋予默认{}
+	  console.log(' . \n\n\n\n\n ...............\n .Request Info .\n ...............\n【requests---Router】'+ config.baseURL + config.url + '\n'+ '【requests---Method】'+ config.method+ '\n'+ '【requests---Params】'+ config.data, '\n\n')
       config.data = config.data || {};
       if (config.custom.isIMApi) {
         config.baseURL = appConfig.getApiUrl();
