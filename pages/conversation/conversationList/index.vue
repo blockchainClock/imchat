@@ -4,7 +4,7 @@
     <scroll-view
       class="scroll-view"
       scroll-y="true"
-      refresher-enabled="true"
+      :refresher-enabled="true"
       :refresher-triggered="triggered"
       :scroll-top="scrollTop"
       :scroll-with-animation="true"
@@ -131,13 +131,18 @@ export default {
     },
     onRestore() {
       this.triggered = true;
-      this.triggered = false;
-      console.log("onRestore");
+      let _this = this;
+	  this.$nextTick(()=>{
+	  		_this.triggered = false;
+	  })
     },
     scrolltolower() {
       this.queryList()
     },
     async queryList(isFirstPage = false) {
+		let _this = this;
+		
+		this.triggered = true;
 		try{
 			await this.$store.dispatch(
 			  "conversation/getConversationList",
@@ -147,8 +152,12 @@ export default {
 		}catch(e){
 			//TODO handle the exception
 		}
-      this.triggered = false;
       this._freshing = false;
+	  
+	   this.$nextTick(()=>{
+		    _this.triggered = false;
+	   })
+	   console.log(_this.triggered )
     },
     closeAllSwipe() {
       this.$refs.swipeWrapperRef.closeAll();
