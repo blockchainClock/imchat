@@ -32,6 +32,7 @@ export const ContactChooseTypes = {
   Card: "Card",
   ShareCard: "ShareCard",
   GetList: "GetList",
+  InviteMeeting:"InviteMeeting"
 };
 
 export const UpdateMessageTypes = {

@@ -151,9 +151,15 @@ export default {
       }
     },
 	getshowCustomMessage(itemdata){
+		let showCustomType = [
+			CustomType.CallingCancel, 
+			CustomType.CallingHungup, 
+			CustomType.CallingReject,
+			CustomType.Meeting
+			];
 		if(itemdata.contentType == 110){
 			let data = JSON.parse(itemdata.customElem.data)
-			if(data.customType == CustomType.CallingCancel || data.customType ==CustomType.CallingHungup || data.customType ==CustomType.CallingReject){
+			if(showCustomType.includes(data.customType)){
 				return true;
 			}else{
 				return false;
@@ -165,7 +171,6 @@ export default {
 	},
     async loadMessageList(isLoadMore = false) {
 		
-		console.log('initsuccess', 1111111);
       this.messageLoadState.loading = true;
       const lastMsgID = this.storeHistoryMessageList[0]?.clientMsgID;
       const options = {

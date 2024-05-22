@@ -82,19 +82,18 @@ export const formatInputHtml = (html) => {
       const atInfoArr = img
         .match(customDataReg)[0]
         .slice(13, -1)
-        .split("&");
+        .split("&amp;");
       atUserList.push({
-        atUserID: atInfoArr[0],
-        groupNickname: atInfoArr[1],
+        atUserID: atInfoArr[0].slice(7),
+        groupNickname: atInfoArr[1].slice(15),
       });
-      return `@${atInfoArr[0]} `;
+      return `@${atInfoArr[0].slice(7)} `;
     }
     if (img.includes('class="emoji_el"')) {
       return img.match(customDataReg)[0].slice(23, -1);
     }
     return "";
   });
-  text = text.replace('</img>', '')
   return {
     text,
     atUserList,

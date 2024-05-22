@@ -897,7 +897,6 @@ export default {
 			 		  console.log('',e);
 			 		}
 			 );
-			
             this.pushNewMessage(newServerMsg);
             setTimeout(() => uni.$emit(PageEvents.ScrollToBottom, true));
           }

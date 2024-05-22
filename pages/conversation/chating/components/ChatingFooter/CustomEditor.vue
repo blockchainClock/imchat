@@ -60,20 +60,20 @@ export default {
 		let oldContent = ''
 		await this.editorCtx.getContents({
 			success(data){
-				
-				oldContent = data.text == '\n' ? '' :  data.html;
-				let sendhtml = `${oldContent}<img class="at_el" data-custom="${res.userData.sendID}&${res.userData.senderNickname}"></img>@${res.userData.senderNickname}`;
-				console.log('seting html',sendhtml)
-				const { text, atUserList } = formatInputHtml(sendhtml);
-				_this.addAtUser(atUserList)
-				_this.editorCtx.setContents({
-					html: sendhtml,
-					fail(err){
-						console.log('//////',err)
-					}
-				})
-				_this.$emit('input',{ detail: {html:sendhtml}} )
-				_this.lastStr = sendhtml;
+				// oldContent = data.text == '\n' ? '' :  data.html;
+				// let sendhtml = `${oldContent}<i class="at_el"  data-custom="${res.userData.sendID}amp;${res.userData.senderNickname}"></i>`;
+				// console.log('seting html',sendhtml)
+				// const { text, atUserList } = formatInputHtml(sendhtml);
+				// _this.addAtUser(atUserList)
+				// _this.editorCtx.setContents({
+				// 	html: sendhtml,
+				// 	fail(err){
+				// 		console.log('//////',err)
+				// 	}
+				// })
+				_this.createCanvasData(res.userData.sendID, res.userData.senderNickname)
+				// _this.$emit('input',{ detail: {html:sendhtml}} )
+				// _this.lastStr = sendhtml;
 			}
 		})
 	})
@@ -168,9 +168,6 @@ export default {
 	   if (contentStr === "@") {
 	     this.$emit("tryAt");
 	   }
-	   // e.detail.html = this.lastStr +  e.detail.html
-	   
-	   	console.log('.///', e.detail.html)
 	   this.$emit("input", e);
 	   this.lastStr = e.detail.html;
 	},

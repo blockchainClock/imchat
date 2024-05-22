@@ -91,7 +91,7 @@ export default {
 			 IMMethods.CreateCustomMessage,
 			 IMSDK.uuid(),
 			 JSON.stringify(messagedata)
-			 )
+			)
 		}catch(e){
 			console.log('error', e)
 			return;

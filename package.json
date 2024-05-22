@@ -2,6 +2,7 @@
   "dependencies": {
     "@livekit/components-core": "^0.8.2",
     "agora-rtc-sdk-ng": "^4.20.2",
+    "clipboard-copy": "^4.0.1",
     "date-fns": "^2.30.0",
     "dayjs": "^1.11.6",
     "image-tools": "^1.4.0",

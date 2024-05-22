@@ -130,7 +130,8 @@ export default {
       this.queryList(true)
     },
     onRestore() {
-      this.triggered = 'restore';
+      this.triggered = true;
+      this.triggered = false;
       console.log("onRestore");
     },
     scrolltolower() {

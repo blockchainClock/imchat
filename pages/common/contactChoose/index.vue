@@ -101,7 +101,7 @@ import IMSDK, {
   SessionType,
   MessageStatus,
 } from "openim-uniapp-polyfill";
-import { UpdateMessageTypes } from "@/constant";
+import { UpdateMessageTypes, CustomType } from "@/constant";
 import CustomNavBar from "@/components/CustomNavBar/index.vue";
 import UserItem from "@/components/UserItem/index.vue";
 import ChooseIndexList from "@/components/ChooseIndexList/index.vue";
@@ -113,6 +113,7 @@ const showGroupTypes = [
   ContactChooseTypes.BatchForWard,
   ContactChooseTypes.MergeForWard,
   ContactChooseTypes.ShareCard,
+  ContactChooseTypes.InviteMeeting,
 ];
 
 const showConversationTypes = [
@@ -140,6 +141,7 @@ export default {
       groupID: "",
       cardInfo: {},
       mergeInfo: {},
+	  meetingInfo:"",
       forwardMessage: "",
       checkedUserIDList: [],
       disabledUserIDList: [],
@@ -243,8 +245,10 @@ export default {
       forwardMessage,
       checkedUserIDList,
       checkedGroupIDList,
+	  meetingInfo,
     } = options;
     this.type = type;
+	this.meetingInfo = meetingInfo ? JSON.parse(meetingInfo) : {};
     this.groupID = groupID;
     this.cardInfo = cardInfo ? JSON.parse(cardInfo) : {};
     this.mergeInfo = decodeURIComponent(mergeInfo);
@@ -391,7 +395,22 @@ export default {
             },
           );
         }
-
+		if(this.type === ContactChooseTypes.InviteMeeting){
+			let messagedata = {
+				data:{
+					customType: CustomType.Meeting,
+					meetingId: this.meetingInfo.id,
+					sessionType: SessionType.Single,
+					createUserName: this.meetingInfo.create_user,
+					platformID: 2
+				}
+			}
+			message = await IMSDK.asyncApi(
+			 IMMethods.CreateCustomMessage,
+			 IMSDK.uuid(),
+			 JSON.stringify(messagedata)
+			)
+		}
         if (this.type === ContactChooseTypes.BatchForWard) {
           const { messageList } = JSON.parse(this.mergeInfo);
 					let arr = []

@@ -101,7 +101,6 @@ export const parseAt = (atel, isParse = false) => {
     const member = atUserList.find(
       (user) => user.atUserID === match.slice(1, -1),
     );
-	console.log('member',member,atUserList, match )
     if (member && !isParse) {
       mstr = mstr.replace(
         match,
@@ -170,6 +169,9 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
 	  break;
 	case MessageType.CustomMessage:
 		let customData = JSON.parse(pmsg.customElem.data)
+		if(customData.customType == CustomType.Meeting){
+			return `${pmsg.senderNickname}：[会议]`;
+		}
 		if(customData.mediaType == 'video'){
 			return `${pmsg.senderNickname}：[视频通话]`;
 		}else if(customData.mediaType == 'audio'){

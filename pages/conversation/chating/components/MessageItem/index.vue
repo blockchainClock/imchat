@@ -40,10 +40,11 @@
             @showInfo="showInfo"
           />
           <media-message-render v-else-if="showMediaRender" :message="source" />
+		   <meeting-message-render v-else-if="showMeetingRender" :message="source" ></meeting-message-render>
 		  <call-message-render v-else-if="getshowCustomMessage(callRenderTypes)" :message="source" :isSender="isSender2"></call-message-render> 
 		  <error-message-render v-else />
-		  <MessageTool v-if="isshowTool && source.contentType !=110" :messageDec="isSender2" :source="source"></MessageTool>
-		   
+		  <MessageTool v-if="isshowTool && showTool" :messageDec="isSender2" :source="source"></MessageTool>
+		
         </view>
       </view>
 	  <view class='quatemessage' v-if="source.quoteElem && source.quoteElem.quoteMessage">{{parseMessageByType(source.quoteElem.quoteMessage)}}</view>
@@ -83,6 +84,7 @@ import ChatingList from "../ChatingList.vue";
 import TextMessageRender from "./TextMessageRender.vue";
 import MediaMessageRender from "./MediaMessageRender.vue";
 import CallMessageRender from "./CallMessageRender.vue";
+import MeetingMessageRender from "./MeetingMessageRender.vue";
 import ErrorMessageRender from "./ErrorMessageRender.vue";
 import MessageTool from "./MessageTool.vue";
 import { CustomType } from "@/constant/im";
@@ -107,7 +109,8 @@ export default {
     MediaMessageRender,
     ErrorMessageRender,
 	MessageTool,
-	CallMessageRender
+	CallMessageRender,
+	MeetingMessageRender
   },
   props: {
     source: Object,
@@ -130,17 +133,19 @@ export default {
     return {
       timer: null,
       conversationID: "",
+	  meetingType: [CustomType.Meeting],
 	  parseMessageByType:parseMessageByType,
 	  customType: 0,
-	  callRenderTypes:  [CustomType.CallingReject,CustomType.CallingCancel,CustomType.CallingHungup ]
+	  customUserTypes:[ CustomType.Meeting ],
+	  callRenderTypes:  [CustomType.CallingReject,CustomType.CallingCancel,CustomType.CallingHungup]
     };
   },
   mounted() {
   	let _this = this;
+	console.log('source',this.source)
   	uni.$on('hiddentool', function(){
   		_this.isshowTool =false
   	})
-	console.log('source',this.source)
   },
   computed: {
     ...mapGetters(["storeCurrentConversation", "storeSelfInfo"]),
@@ -151,20 +156,35 @@ export default {
 		if(this.source.contentType == 110){
 			let data = JSON.parse(this.source.customElem.data)
 			if(this.callRenderTypes.includes(data.customType)){
-				
-				if( this.storeSelfInfo.userID == data.inviterUserID  ){
-					return true;
-				}else{
-					return false;
-				}
+				return this.storeSelfInfo.userID == data.inviterUserID ;
+			
+			}else if(this.customUserTypes.includes(data.customType)){
+				return this.storeSelfInfo.userID == this.source.sendID 
 			}
 		}else{
 			return this.storeSelfInfo.userID == this.source.sendID
 		}
 	},
+	showTool(){
+		if(this.source.contentType == 110){
+			let data = JSON.parse(this.source.customElem.data)
+			return data.customType == CustomType.Meeting;
+		}else{
+			return true;
+		}
+	},
     formattedMessageTime() {
       return formatMessageTime(this.source.sendTime);
     },
+	showMeetingRender(){
+		if(this.source.contentType == 110){
+			let data = JSON.parse(this.source.customElem.data)
+			return data.customType == CustomType.Meeting;
+		}else{
+			return false;
+		}
+		
+	},
     showTextRender() {
       return textRenderTypes.includes(this.source.contentType);
     },
@@ -207,6 +227,7 @@ export default {
 		uni.$emit('atUser',{userData:this.source})
 	},
 	getshowCustomMessage(types){
+			console.log('type',types,this.source ,this.customType )
 		if(this.source.contentType == 110){
 			let data = JSON.parse(this.source.customElem.data)
 			this.customType = data.customType;

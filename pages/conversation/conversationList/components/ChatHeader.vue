@@ -115,7 +115,11 @@ export default {
           idx: 3,
           title: "创建群聊",
           icon: require("static/images/more_create_group.png"),
-        },
+        }, {
+          idx: 4,
+          title: "创建会议",
+          icon: require("static/images/more_create_group.png"),
+        }
       ],
     };
   },
@@ -172,6 +176,11 @@ export default {
             url: `/pages/common/createGroup/index`,
           });
           break;
+		case 4:
+		    uni.navigateTo({
+		    	url:'/pages/meeting/index/index'
+		    })
+		    break;
         default:
           break;
       }

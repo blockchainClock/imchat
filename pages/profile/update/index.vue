@@ -2,11 +2,11 @@
 <template>
 	<view class="mask" @click="closed">
 		<view class="mask-con">
-			<image src="/static/baseIcon/update.png" mode="aspectFit" class="update-bg"></image>
+			<image src="/static/images/update.png" mode="aspectFit" class="update-bg"></image>
 			<view style="position: relative; z-index: 1;">
 				<view class="content">
 					<view class="title">
-						获取最新版本
+						升级最新版本
 					</view>
 					<view class="update-con" v-html="content"></view>
 				</view>

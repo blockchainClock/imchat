@@ -2,92 +2,95 @@
 	<view class="page">
 		<!-- <view class="status-bar-height header-fixed"></view>
 		<view class="status-bar-height"></view> -->
-		<view class="header-wrap">
-			<view class="status-bar-height"></view>
-			<view style="height: 580rpx;">
-				<view style="padding: 0 54rpx;">
-					<view class="box1 base-flex-between">
-						<view class="inner1">
-							<view class="text1">发现</view>
-							<view class="text2">Discover</view>
-						</view>
-						<view class="inner2 flex-cetner">
-							<image @tap="navRankInfo" class="wrap1" src="/static/images/find/frame.png" mode=""></image>
-							<image @tap="navMyInfo" class="wrap2" src="/static/images/find/message.png" mode=""></image>
-						</view>
-					</view>
-					<view class="flex-center box2">
-						<image @tap="confirmSearch" class="inner1" src="/static/images/find/search.png" mode=""></image>
-						<input @confirm="confirmSearch" v-model="name" class="inner2" type="text" placeholder="SEARCH"
-							placeholder-style="color: rgba(0, 0, 0, 0.40);font-size:26rpx;font-weight:500;">
-					</view>
-				</view>
-				<view style="padding-left: 54rpx;margin-bottom: 48rpx;flex-wrap: nowrap;width: 100%;"
-					class="flex-center box3">
-					<image class="inner1" src="/static/images/find/fenlei.png" mode="" style="flex-shrink: 0;"></image>
-					<scroll-view :scroll-left="scrollLeft" scroll-x="true" class="inner2" style="width: 608rpx;"
-						id="scrollContainer">
-						<view class="flex-center" style="flex-wrap: nowrap;">
-							<view @tap="changeTag(i)" class="wrap1 v-tabs__container-item"
-								:class="{'wrap1-a':tagIndex==i}" v-for="(item,i) in tagsList" :key="i">{{item.value}}
-							</view>
-							<view style="width: 2rpx;flex-shrink: 0;height: 68rpx;"></view>
-						</view>
-					</scroll-view>
-				</view>
-				<view style="padding: 0 54rpx;">
-					<swiper @change="swiperChange" style="width: 100%;height: 356rpx;" circular :indicator-dots="false"
-						:autoplay="true" :interval="5000">
-						<swiper-item style="width: 100%;height: 356rpx;" v-for="(item,i) in swiperList" :key="i">
-							<image :src="item.img" style="width: 100%;height: 356rpx;" mode="aspectFill"></image>
-						</swiper-item>
-
-					</swiper>
-					<view class="flex-item-center" style="margin-top: 28rpx;">
-						<view class="flex-center">
-							<view v-for="(item,i) in swiperList" :key="i">
-								<view style="width: 40rpx;height: 8rpx;border-radius: 8rpx;background-color: #000000;"
-									:style="{'margin-right':i==swiperList.length-1?'0':'14rpx'}" v-if="i==swiperIndex">
-								</view>
-								<view v-else
-									style="width:8rpx;height: 8rpx;background-color: #999999;border-radius: 50%;"
-									:style="{'margin-right':i==swiperList.length-1?'0':'14rpx'}"></view>
-							</view>
-						</view>
-					</view>
-				</view>
-			</view>
-
-		</view>
-		<view style="height: 230rpx;"></view>
-		<view @tap="navDetails(item)" v-for="(item,i) in listData" :key="i"
-			style="display: flex;padding: 50rpx 54rpx;border-bottom: 10rpx solid #F5F6FA;">
-			<image :src="item.banner" style="width: 172rpx;height: 232rpx;flex-shrink: 0;margin-right: 28rpx;"
-				mode="aspectFill"></image>
-			<view style="width: 440rpx;padding-top: 14rpx;">
-				<view style="font-size: 30rpx;color: #020202;font-weight: 500;width: 440rpx;margin-bottom: 20rpx;"
-					class="text-one-line">{{item.title}}</view>
-				<view class="text-two-line"
-					style="width: 440rpx;font-size: 24rpx;color: color: rgba(0, 0, 0, 0.40);line-height: 30rpx;">
-					{{item.brief}}
-				</view>
-				<view class="base-flex-between" style="margin-top: 16rpx;">
-					<view
-						style="height: 48rpx;background-color: #F5F6FA;border-radius: 6rpx;padding: 0 12rpx;font-size: 24rpx;color: #999;line-height: 48rpx;max-width: 300rpx;"
-						class="text-one-line">
-						发布者：{{item.name}}
-					</view>
-					<image src="/static/images/find/bofang.png" style="width: 64rpx;height: 64rpx;" mode=""></image>
-				</view>
-			</view>
-		</view>
-		<!-- <view v-if="listData.length==0" class="flex-item-center" -->
-			<!-- style="font-size: 30rpx;color: #999999;padding-top: 80rpx;">暂无数据</view> -->
-		<image @tap="navReseaseTopic" src="/static/images/find/addGroup.png"
-			style="position: fixed;left: 50%;transform: translateX(-50%);height: 108rpx;width: 108rpx;bottom: calc(50px + 40rpx);"
-			mode=""></image>
-
+		<view style="font-size: 40rpx;margin: 150px auto;text-align: center;color: #888;">敬请期待</view>
+		<view style="display: none;">
 		
+			<view class="header-wrap">
+				<view class="status-bar-height"></view>
+				<view style="height: 580rpx;">
+					<view style="padding: 0 54rpx;">
+						<view class="box1 base-flex-between">
+							<view class="inner1">
+								<view class="text1">发现</view>
+								<view class="text2">Discover</view>
+							</view>
+							<view class="inner2 flex-cetner">
+								<image @tap="navRankInfo" class="wrap1" src="/static/images/find/frame.png" mode=""></image>
+								<image @tap="navMyInfo" class="wrap2" src="/static/images/find/message.png" mode=""></image>
+							</view>
+						</view>
+						<view class="flex-center box2">
+							<image @tap="confirmSearch" class="inner1" src="/static/images/find/search.png" mode=""></image>
+							<input @confirm="confirmSearch" v-model="name" class="inner2" type="text" placeholder="SEARCH"
+								placeholder-style="color: rgba(0, 0, 0, 0.40);font-size:26rpx;font-weight:500;">
+						</view>
+					</view>
+					<view style="padding-left: 54rpx;margin-bottom: 48rpx;flex-wrap: nowrap;width: 100%;"
+						class="flex-center box3">
+						<image class="inner1" src="/static/images/find/fenlei.png" mode="" style="flex-shrink: 0;"></image>
+						<scroll-view :scroll-left="scrollLeft" scroll-x="true" class="inner2" style="width: 608rpx;"
+							id="scrollContainer">
+							<view class="flex-center" style="flex-wrap: nowrap;">
+								<view @tap="changeTag(i)" class="wrap1 v-tabs__container-item"
+									:class="{'wrap1-a':tagIndex==i}" v-for="(item,i) in tagsList" :key="i">{{item.value}}
+								</view>
+								<view style="width: 2rpx;flex-shrink: 0;height: 68rpx;"></view>
+							</view>
+						</scroll-view>
+					</view>
+					<view style="padding: 0 54rpx;">
+						<swiper @change="swiperChange" style="width: 100%;height: 356rpx;" circular :indicator-dots="false"
+							:autoplay="true" :interval="5000">
+							<swiper-item style="width: 100%;height: 356rpx;" v-for="(item,i) in swiperList" :key="i">
+								<image :src="item.img" style="width: 100%;height: 356rpx;" mode="aspectFill"></image>
+							</swiper-item>
+
+						</swiper>
+						<view class="flex-item-center" style="margin-top: 28rpx;">
+							<view class="flex-center">
+								<view v-for="(item,i) in swiperList" :key="i">
+									<view style="width: 40rpx;height: 8rpx;border-radius: 8rpx;background-color: #000000;"
+										:style="{'margin-right':i==swiperList.length-1?'0':'14rpx'}" v-if="i==swiperIndex">
+									</view>
+									<view v-else
+										style="width:8rpx;height: 8rpx;background-color: #999999;border-radius: 50%;"
+										:style="{'margin-right':i==swiperList.length-1?'0':'14rpx'}"></view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+
+			</view>
+			<view style="height: 230rpx;"></view>
+			<view @tap="navDetails(item)" v-for="(item,i) in listData" :key="i"
+				style="display: flex;padding: 50rpx 54rpx;border-bottom: 10rpx solid #F5F6FA;">
+				<image :src="item.banner" style="width: 172rpx;height: 232rpx;flex-shrink: 0;margin-right: 28rpx;"
+					mode="aspectFill"></image>
+				<view style="width: 440rpx;padding-top: 14rpx;">
+					<view style="font-size: 30rpx;color: #020202;font-weight: 500;width: 440rpx;margin-bottom: 20rpx;"
+						class="text-one-line">{{item.title}}</view>
+					<view class="text-two-line"
+						style="width: 440rpx;font-size: 24rpx;color: color: rgba(0, 0, 0, 0.40);line-height: 30rpx;">
+						{{item.brief}}
+					</view>
+					<view class="base-flex-between" style="margin-top: 16rpx;">
+						<view
+							style="height: 48rpx;background-color: #F5F6FA;border-radius: 6rpx;padding: 0 12rpx;font-size: 24rpx;color: #999;line-height: 48rpx;max-width: 300rpx;"
+							class="text-one-line">
+							发布者：{{item.name}}
+						</view>
+						<image src="/static/images/find/bofang.png" style="width: 64rpx;height: 64rpx;" mode=""></image>
+					</view>
+				</view>
+			</view>
+			<!-- <view v-if="listData.length==0" class="flex-item-center" -->
+				<!-- style="font-size: 30rpx;color: #999999;padding-top: 80rpx;">暂无数据</view> -->
+			<image @tap="navReseaseTopic" src="/static/images/find/addGroup.png"
+				style="position: fixed;left: 50%;transform: translateX(-50%);height: 108rpx;width: 108rpx;bottom: calc(50px + 40rpx);"
+				mode=""></image>
+
+		</view>
 	</view>
 </template>
 
