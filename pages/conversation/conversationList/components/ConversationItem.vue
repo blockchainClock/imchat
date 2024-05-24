@@ -162,7 +162,6 @@ export default {
   },
   methods: {
     clickConversationItem() {
-      console.log(this.source);
       prepareConversationState(this.source);
     },
     clickConversationMenu({ name, index }, item) {

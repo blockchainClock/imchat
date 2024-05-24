@@ -137,7 +137,6 @@ export default {
   onLoad() {
     this.version = version
     this.init();
-	console.log(this.$store.getters, this.$store.state)
   },
   methods: {
     copy() {

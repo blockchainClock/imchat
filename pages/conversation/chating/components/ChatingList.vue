@@ -3,8 +3,8 @@
     backgroundSize: `100% ${bgHeight}`,
   }" @scroll="throttleScroll" :scroll-top="scrollTop" scroll-y :scroll-into-view="scrollIntoView" upper-threshold="250"
     @scrolltoupper="scrolltoupper">
-	
     <view id="scroll_wrap">
+		
       <view v-if="loadMoreStatus !== 'nomore'">
         <u-loadmore nomoreText="" :status="loadMoreStatus" />
       </view>
@@ -12,8 +12,7 @@
         <view v-if="getTimeLine" class="time_gap_line">
           {{ getTimeLine(item, storeHistoryMessageList[index - 1]) }}
         </view>
-		
-		<view >
+		<view>
 			<view v-if="item.contentType == 2101" style="text-align: center;font-size: 10px;">{{item.senderNickname}}撤回一条消息</view>
 			<message-item-render
 				:mutipleCheckVisible="mutipleCheckVisible"

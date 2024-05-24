@@ -23,7 +23,7 @@ let updateDownloadTask = null;
 let notificationIntance = null;
 let pausing = false;
 let shownotice = false;
-var info = plus.push.getClientInfo();
+
  // floatWin.show({
  // 		title: "kechat",
  // 		content: ': 你有一条新消息' ,
@@ -52,13 +52,27 @@ export default {
     console.log("App Show");
 	floatWin.hide()
 	shownotice = false;
-	 // IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), false);
+	// setTimeout(()=>{
+	// 	uni.getPushClientId({
+	// 		success: (res) => {
+	// 			console.log(res.cid);
+	// 			uni.showModal({
+	// 				content:res.cid
+	// 			})
+	// 		},
+	// 		fail(err) {
+	// 			console.log(err)
+	// 		}
+	// 	})
+		
+	// },2000)
+	 IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), false);
 	
-	IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
   },
   onHide: function () {
     console.log("App Hide");
 	shownotice = true;	
+	IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
   },
   computed: {
     ...mapGetters([
@@ -109,7 +123,7 @@ export default {
 	  uni.$on('callsend',(data)=>{
 		  console.log('customType,params, userid',data)
 		  callEvent(data.customType,data, data.userID,()=>{
-			  uni.navigateBack()
+			  // uni.navigateBack()
 		  })
 	  })
       const kickHander = (message) => {

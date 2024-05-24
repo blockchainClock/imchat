@@ -1,6 +1,6 @@
 <template>
   <view class="conversation_container wx-top">
-    <chat-header ref="chatHeaderRef" />
+    <chat-header ref="chatHeaderRef" :unReadCount="storeUnReadCount" />
     <scroll-view
       class="scroll-view"
       scroll-y="true"
@@ -22,6 +22,7 @@
         <conversation-item
           v-for="item in storeConversationList"
           :key="item.conversationID"
+		   v-if="item.showName"
           @closeAllSwipe="closeAllSwipe"
           :source="item"
           ref="conversationItem"
@@ -57,10 +58,10 @@ export default {
     };
   },
   computed: {
-    ...mapGetters(["storeConversationList", "storeIsSyncing"]),
+    ...mapGetters(["storeConversationList", "storeIsSyncing","storeUnReadCount"]),
   },
   onReady() {
-    console.log(this.storeConversationList)
+    console.log('会话列表',this.storeConversationList)
     // #ifdef APP-PLUS
     this.$nextTick(() => plus.navigator.closeSplashscreen());
     // #endif
@@ -157,7 +158,6 @@ export default {
 	   this.$nextTick(()=>{
 		    _this.triggered = false;
 	   })
-	   console.log(_this.triggered )
     },
     closeAllSwipe() {
       this.$refs.swipeWrapperRef.closeAll();

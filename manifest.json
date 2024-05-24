@@ -19,7 +19,6 @@
         "modules" : {
             "VideoPlayer" : {},
             "Camera" : {},
-            "Record" : {},
             "Geolocation" : {},
             "Maps" : {},
             "Push" : {
@@ -29,7 +28,8 @@
                     "appsecret" : "572BJ9wwkc5QoTSlmYlIm8"
                 }
             },
-            "Barcode" : {}
+            "Barcode" : {},
+            "Record" : {}
         },
         "distribute" : {
             "android" : {
@@ -86,16 +86,21 @@
                         "appid" : "K2sHf8ttjSAC57AMDqNjP8",
                         "appkey" : "8XJxTgqPtM94Saq7fQXqx1",
                         "appsecret" : "572BJ9wwkc5QoTSlmYlIm8"
+                    },
+                    "unipush" : {
+                        "version" : "2",
+                        "offline" : true,
+                        "hms" : {}
                     }
                 }
             },
             "splashscreen" : {
                 "androidStyle" : "default",
-                "iosStyle" : "common",
+                "iosStyle" : "default",
                 "android" : {
-                    "hdpi" : "",
-                    "xhdpi" : "",
-                    "xxhdpi" : ""
+                    "hdpi" : "/static/start1.9.png",
+                    "xhdpi" : "/static/start1.9.png",
+                    "xxhdpi" : "/static/start1.9.png"
                 }
             },
             "icons" : {

@@ -40,7 +40,7 @@
 		      </view>
 		    </view>
 		  </view>
-			<view class="app-name">Kechat</view>
+			<view class="app-name">Kechat {{unReadCount > 0 ? '(' + unReadCount + ')' : ''}}</view>
 			
 		  <view class="right_action">
 		    <view class="call_icon"> </view>
@@ -69,8 +69,11 @@
 		    </u-overlay>
 		  </view>
 		</view>
-		<view class="search">
-			<input placeholder="搜索" />
+		<view class="search" @click="tosearch" >
+			<view class="input">
+				<image class="icon-search" src="@/static/images/common_search.png"></image>
+				<text>搜索</text>
+			</view>
 		</view>
 	</view>	
   
@@ -86,7 +89,12 @@ export default {
   components: {
     MyAvatar,
   },
-  props: {},
+  props: {
+	  unReadCount:{
+		  default:0,
+		  type:Number
+	  }
+  },
   data() {
     return {
       connectStart: -2,
@@ -115,11 +123,12 @@ export default {
           idx: 3,
           title: "创建群聊",
           icon: require("static/images/more_create_group.png"),
-        }, {
-          idx: 4,
-          title: "创建会议",
-          icon: require("static/images/more_create_group.png"),
-        }
+        }, 
+		// {
+  //         idx: 4,
+  //         title: "创建会议",
+  //         icon: require("static/images/more_create_group.png"),
+  //       }
       ],
     };
   },
@@ -133,6 +142,11 @@ export default {
     this.unsubscribeAll();
   },
   methods: {
+    tosearch(){
+		uni.navigateTo({
+			url:'/pages/conversation/conversationList/searchChat'
+		})  
+    },
     setConnectStart() {
       console.log("111111-------------------1");
     },
@@ -221,7 +235,7 @@ export default {
  .search{
 	   padding: 0 20rpx 16rpx 20rpx;
    }
-   .search input{
+   .search .input{
 	   background: #fff;
 	   border-radius: 3px;
 	   font-size: 28rpx;
@@ -229,6 +243,17 @@ export default {
 	   line-height: 60rpx;
 	   height: 60rpx;
 	   text-align: center;
+	   color: #888;
+	   
+	   display: flex;
+	   align-items: center;
+	   justify-content: center;
+   }
+   .icon-search{
+   		  width: 20px;
+   		  height: 20px;
+		  margin-right: 5px;
+		  opacity: 0.9;
    }
 .chat_header {
   @include btwBox();

@@ -33,20 +33,22 @@
         <view class="menu_left">
           <image style="width: 48rpx; height: 48rpx" :src="item.icon" mode="" />
           <text>{{ item.title }}</text>
+		  <text v-if="item.idx == 5 && haveNewVersion " class="dot">新版本</text>
         </view>
         <u-icon name="arrow-right" size="16" color="#999"></u-icon>
       </view>
     </view>
 
     <u-toast ref="uToast"></u-toast>
-	<Update v-if="showUpdate" @closeUpdate="closeUpdate"></Update>
+	<Update v-if="showUpdate" :updateInfo="updateInfo[0]" @closeUpdate="closeUpdate" @finishUpdate="finishUpdate"></Update>
   </view>
 </template>
 
 <script>
 import IMSDK from "openim-uniapp-polyfill";
 import MyAvatar from "@/components/MyAvatar/index.vue";
-import Update from "../../profile/update/index.vue"
+import Update from "../../profile/update/index.vue";
+import {getAppVersion} from "@/api/imApi.js"
 export default {
   components: {
     MyAvatar,
@@ -55,6 +57,8 @@ export default {
   data() {
     return {
 	  showUpdate:false,
+	  updateInfo:[],
+	  haveNewVersion:false,
       profileMenus: [
         {
           idx: 0,
@@ -79,15 +83,12 @@ export default {
           idx: 5,
           title: "升级版本",
           icon: require("static/images/chating_footer_emoji.png"),
-        },{
-          idx: 6,
-          title: "清除缓存",
-          icon: require("static/images/chating_footer_emoji.png"),
-        },{
-          idx: 7,
-          title: "会议",
-          icon: require("static/images/chating_footer_emoji.png"),
-        }
+        },
+		// {
+  //         idx: 6,
+  //         title: "会议",
+  //         icon: require("static/images/chating_footer_emoji.png"),
+  //       }
       ],
     };
   },
@@ -96,9 +97,27 @@ export default {
       return this.$store.getters.storeSelfInfo;
     },
   },
+  onShow() {
+  	getAppVersion().then(res=>{
+		this.updateInfo = res.appVersionInfo;
+		let localVersion =  uni.getStorageSync('kechatVersion')
+		console.log('本地版本',localVersion)
+		if(!localVersion){
+			uni.setStorageSync('kechatVersion', this.updateInfo[0].Version);
+			return;
+		}
+		if(localVersion != this.updateInfo[0].Version){
+			this.haveNewVersion = true;
+		}
+		
+	})
+  },
   methods: {
 	closeUpdate(){
 		  this.showUpdate = false;
+	},
+	finishUpdate(){
+		uni.setStorageSync('kechatVersion', this.updateInfo[0].Version);
 	},
     copy() {
       uni.setClipboardData({
@@ -162,17 +181,6 @@ export default {
 			this.showUpdate = true;
 			break;
 		case 6:
-			// 清除缓存
-			IMSDK.asyncApi(
-				IMSDK.IMMethods.DeleteAllMsgFromLocal,
-				IMSDK.uuid()
-			).then(res=>{
-				uni.showToast({
-					title:'清除成功'
-				})
-			})
-			break
-		case 7:
 			uni.navigateTo({
 				url:'/pages/meeting/index/index'
 			})
@@ -203,7 +211,17 @@ export default {
     background-image: url("@/static/images/profile_top_bg.png");
     background-repeat: round;
   }
-
+.dot{
+	display: flex;
+	padding: 3px 5px;
+	background: red;
+	border-radius:10px 10px 10px 0;
+	color:#fff;
+	font-size: 8px;
+	position: relative;
+	left: 3px;
+	top:-10px;
+}
   .info_card {
     width: 640rpx;
     height: 196rpx;

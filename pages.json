@@ -26,6 +26,18 @@
        
       }
     },
+	{
+	  "path": "pages/conversation/conversationList/searchChat",
+	  "style": {
+	    "navigationBarTitleText": "",
+	    "enablePullDownRefresh": false,
+	    "disableScroll": true,
+		"navigationStyle": "custom",
+	    "app-plus": {
+	      "softinputMode": "adjustResize"
+	    }
+	  }
+	},
     {
       "path": "pages/contact/index/index",
       "style": {

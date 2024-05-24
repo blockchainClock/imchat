@@ -6,9 +6,10 @@
 			<view style="position: relative; z-index: 1;">
 				<view class="content">
 					<view class="title">
-						升级最新版本
+						最新版本 ({{updateInfo.Version}})
 					</view>
-					<view class="update-con" v-html="content"></view>
+					<view style="text-align: center;font-size: 12px;margin-top: 20px;">{{updateInfo.Desc}}</view>
+					<!-- <view class="update-con" v-html="content"></view> -->
 				</view>
 			</view>
 			<view v-if="isUpdate" class="update-btn-wrap">
@@ -20,9 +21,10 @@
 						立即升级
 					</view>
 				</view>
-				<view class="update-btn" v-if="is_file_update==1" @click.stop="downLoad">
+				<view class="update-btn" v-if="is_file_update==1 && updateInfo.Version != localVersion" @click.stop="downLoad">
 					立即升级
 				</view>
+				<view style="text-align: center;font-size: 12px;margin-top:25px;color:#888">当前版本：{{localVersion}}</view>
 			</view>
 			
 			<view v-else
@@ -45,36 +47,30 @@
 	} from 'vuex';
 	export default {
 		name: 'Update',
+		props:{
+			updateInfo:{
+				default:{},
+				type:Object
+			}
+		},
 		data() {
 			return {
 				downNum: 0,
 				isUpdate: true,
-				version: '',
 				content: '',
+				localVersion: uni.getStorageSync('kechatVersion'),
 				link: '',
-				is_file_update:1,
-				updateInfo: {
-				  msg:"新版本更新内容",
-				  force: 0,
-				  number: "版本号",
-				  ios:"http://kechat.keynes.pro/__UNI__F845BC8.wgt",
-				  android: "http://kechat.keynes.pro/__UNI__F845BC8.wgt"
-				  
-			  }
+				is_file_update:1
 			}
 		},
 		computed:{
 		},
 		onLoad() {
-			this.content=this.updateInfo.msg;
-			console.log(this.updateInfo,'this.updateInfo')
-			// this.version = `${this.updateInfo.version||''}`
-			this.is_file_update=this.updateInfo.force//0 非强制，1 强制|
-			this.version=this.updateInfo.number;
+			this.content=this.updateInfo.Version;
 			if(uni.getSystemInfoSync().platform=='ios'){
-				this.link=this.updateInfo.ios;
+				this.link=this.updateInfo.DownloadUrl;
 			}else{
-				this.link=this.updateInfo.android;
+				this.link=this.updateInfo.DownloadUrl;
 			}
 			
 		},
@@ -94,12 +90,11 @@
 			},
 			downLoad() {
 				if(uni.getSystemInfoSync().platform=='ios'){
-					this.link=this.updateInfo.ios;
+					this.link=this.updateInfo.DownloadUrl;
 				}else{
-					this.link=this.updateInfo.android;
+					this.link=this.updateInfo.DownloadUrl;
 				}
 				let self=this;
-				console.log(this.link,this.updateInfo)
 				if(!this.link) {
 					uni.showToast({
 						title: '下载地址为空',
@@ -127,6 +122,7 @@
 								plus.runtime.install(path, {
 									force: true
 								}, function() {
+									self.$emit('finishUpdate')
 									var str = '更新成功,请手动重启'; //'更新成功,请手动重启'
 									if (plus.os.name.toLowerCase() == 'ios') {
 										str = '更新成功，将自动重启' //'更新成功，将自动重启'

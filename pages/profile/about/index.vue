@@ -2,15 +2,15 @@
   <view class="page_container">
     <custom-nav-bar title="关于我们" />
     <view class="logo_area">
-      <image src="@/static/images/about_logo.png" mode=""></image>
-      <view>{{ version }}</view>
+      <image src="@/static/logo.png" mode=""></image>
+      <!-- <view>{{ version }}</view> -->
 
-      <info-item
+      <!-- <info-item
         v-if="$u.os() === 'android'"
         class="check"
         title="检查新版本"
         content=""
-      />
+      /> -->
     </view>
   </view>
 </template>
@@ -76,6 +76,7 @@ export default {
       width: 72px;
       height: 72px;
       margin-bottom: 24rpx;
+	  border-radius: 50%;
     }
   }
 

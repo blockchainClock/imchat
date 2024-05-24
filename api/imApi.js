@@ -16,6 +16,25 @@ export const getOnlineStateFromSvr = (userID) =>
     },
   );
 
+  export const getAppVersion = ()=>
+       
+	   uni.$u?.http.post(
+	     "app/app_version",
+		 JSON.stringify({
+		     "status": "1",
+		      "pagination": {
+		         "pageNumber": 1,
+		         "showNumber": 100
+		     }
+		 }),
+		 {
+		   header: {
+		     token: uni.getStorageSync("BusinessToken"),
+		   },
+		 }
+	   );
+	   
+	   
   export const getRtcConnectData = (room, identity) =>
   
     uni.$u?.http.post(
