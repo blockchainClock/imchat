@@ -1,5 +1,5 @@
 <template>
-	<view class="wrap">
+	<view  :class="smallFlag ? 'small-window' : 'wrap'">
 		<view class="big" v-if="!channel.isAudio">
 			<rtc-surface-view class="flex-sub" :uid="transpose?uid:0"></rtc-surface-view>
 		</view>
@@ -113,7 +113,7 @@
 				isMute:false ,//是否静音
 				isSpeaker:true ,//是否打开免提,
 				overtime:null ,//拨打超时计时器
-				
+				smallFlag:false,
 				systemInfo:null,
 				offset:{ //偏移量
 					x:0,
@@ -163,8 +163,10 @@
 			this.offset.maxY = this.systemInfo.windowHeight - uni.upx2px(500)
 		},
 		async onLoad(options) {
+			
+			
 			this.token = uni.getStorageSync('videoToken');
-			let channinfo = JSON.parse(options.chainnInfo)
+			let channinfo = options.chainnInfo ? JSON.parse(options.chainnInfo) : {}
 			this.channinfo = channinfo;
 			this.to = channinfo.to ? channinfo.to : false;
 			this.channel.channelId = channinfo.conversationID;
@@ -253,7 +255,7 @@
 				// })
 			},
 			smallWindow(){
-				uni.navigateBack()
+				// this.smallFlag = true;
 				
 			},
 			addListeners() { //初始化监听
@@ -644,8 +646,19 @@
 		background-color: #FFFFFF;
 	}
 	.wrap{
+		
 		flex: 1;
 		background-color: #000000;
+	}
+	.small-window{
+		overflow: hidden;
+		width: 80px;
+		height: 80px;
+		position: absolute;
+		right: 20px;
+		top: 40px;
+		background-color: #000000;
+		border-radius: 10px;
 	}
 	.big{
 		position: absolute;

@@ -6,7 +6,7 @@ import IMSDK, {
   MessageType,
   SessionType,
 } from "openim-uniapp-polyfill";
-    const floatWin = uni.requireNativePlugin('Ba-FloatWinNotification')
+    // const floatWin = uni.requireNativePlugin('Ba-FloatWinNotification')
 import config from "./common/config";
 import { getDbDir, toastWithCallback } from "@/util/common.js";
 import { conversationSort } from "@/util/imCommon";
@@ -22,7 +22,11 @@ let cacheConversationList = [];
 let updateDownloadTask = null;
 let notificationIntance = null;
 let pausing = false;
-let shownotice = false;
+const jv = uni.requireNativePlugin('JG-JPush');
+jv.getRegistrationID(result=>{
+					let registerID = result.registerID
+					console.log('获取推送信息成功',registerID);
+})	
 
  // floatWin.show({
  // 		title: "kechat",
@@ -50,28 +54,34 @@ export default {
   },
   onShow: function () {
     console.log("App Show");
-	floatWin.hide()
-	shownotice = false;
-	// setTimeout(()=>{
-	// 	uni.getPushClientId({
-	// 		success: (res) => {
-	// 			console.log(res.cid);
-	// 			uni.showModal({
-	// 				content:res.cid
-	// 			})
-	// 		},
-	// 		fail(err) {
-	// 			console.log(err)
-	// 		}
-	// 	})
+	setTimeout(()=>{
+		// uni.getPushClientId({
+		// 	success: (res) => {
+		// 		console.log(res.cid);
+		// 		uni.showModal({
+		// 			content:res.cid
+		// 		})
+		// 	},
+		// 	fail(err) {
+		// 		console.log(err)
+		// 	}
+		// })
 		
-	// },2000)
+		// plus.push.getClientInfoAsync((info)=>{
+		
+		// 	uni.showModal({
+		// 		content:info['clientid']
+		// 	})
+		// }, function(e){
+		// console.log('获取推送信息失败',e);
+		// });
+		
+	},2000)
 	 IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), false);
 	
   },
   onHide: function () {
     console.log("App Hide");
-	shownotice = true;	
 	IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
   },
   computed: {
@@ -568,7 +578,6 @@ export default {
 				})
 					.then((res) => {
 						initStore()
-						console.log("success", res);
 					})
 					.catch((err) => {
 						console.log("error", err);
@@ -641,7 +650,6 @@ export default {
       // #ifdef APP-PLUS
       plus.globalEvent.addEventListener("newintent", (e) => {
         console.log(plus.runtime.arguments);
-		  floatWin.hide()
         let launchData = {};
         try {
           launchData = JSON.parse(plus.runtime.arguments);

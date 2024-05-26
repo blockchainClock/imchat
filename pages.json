@@ -54,6 +54,7 @@
         "disableScroll": true,
         "app-plus": {
           "softinputMode": "adjustResize"
+		  
         }
       }
     },
@@ -305,7 +306,9 @@
 		"style": {
 			"navigationBarTitleText": "%call%",
 			"enablePullDownRefresh": false,
-			"navigationBarTextStyle": "white"
+			"navigationBarTextStyle": "white",
+			"background": "transparent"
+				
 		}
 	},{
 		"path": "pages/conversation/chating/liveCall",

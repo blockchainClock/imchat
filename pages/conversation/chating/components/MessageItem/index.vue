@@ -227,7 +227,6 @@ export default {
 		uni.$emit('atUser',{userData:this.source})
 	},
 	getshowCustomMessage(types){
-			console.log('type',types,this.source ,this.customType )
 		if(this.source.contentType == 110){
 			let data = JSON.parse(this.source.customElem.data)
 			this.customType = data.customType;

@@ -110,6 +110,7 @@ export default {
 			  params.userName = this.storeCurrentConversation.showName;
 			  params.sendID = this.storeSelfInfo.userID;
 			  params.to = this.storeCurrentConversation.userID;
+			 
 			  uni.navigateTo({
 			  	url:'/pages/conversation/chating/call?chainnInfo=' + JSON.stringify(params)
 			  })

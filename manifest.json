@@ -23,9 +23,9 @@
             "Maps" : {},
             "Push" : {
                 "igexin" : {
-                    "appid" : "K2sHf8ttjSAC57AMDqNjP8",
-                    "appkey" : "8XJxTgqPtM94Saq7fQXqx1",
-                    "appsecret" : "572BJ9wwkc5QoTSlmYlIm8"
+                    "appid" : "dy1QjA6kRQ6GAAo1KWr7T6",
+                    "appkey" : "AitTN0u3id5BKimUW4Uqd4",
+                    "appsecret" : "crWccyXY7y7Lf4K8kJsO98"
                 }
             },
             "Barcode" : {},
@@ -34,6 +34,16 @@
         "distribute" : {
             "android" : {
                 "permissions" : [
+                    "<uses-permission android:name=\"${applicationId}.permission.JPUSH_MESSAGE\"/>",
+                    "<uses-permission android:name=\"android.permission.POST_NOTIFICATIONS\"/>",
+                    "<uses-permission android:name=\"com.hihonor.android.launcher.permission.CHANGE_BADGE\"/>",
+                    "<uses-permission android:name=\"com.huawei.android.launcher.permission.CHANGE_BADGE\"/>",
+                    "<uses-permission android:name=\"android.permission.ACCESS_BACKGROUND_LOCATION\"/>",
+                    "<uses-permission android:name=\"android.permission.QUERY_ALL_PACKAGES\"/>",
+                    "<uses-permission android:name=\"android.permission.GET_TASKS\"/>",
+                    "<uses-permission android:name=\"${applicationId}.permission.MIPUSH_RECEIVE\"/>",
+                    "<uses-permission android:name=\"com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE\"/>",
+                    "<uses-permission android:name=\"com.heytap.mcs.permission.RECIEVE_MCS_MESSAGE\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-feature android:name=\"android.hardware.camera.autofocus\"/>",
                     "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\"/>",
@@ -56,7 +66,8 @@
                     "<uses-permission android:name=\"android.permission.WAKE_LOCK\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
-                    "<uses-permission android:name=\"android.permission.PUSH\"/>"
+                    "<uses-permission android:name=\"android.permission.PUSH\"/>",
+                    "<uses-permission android:name=\"android.permission.SYSTEM_OVERLAY_WINDOW\"/>"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
                 "minSdkVersion" : 21
@@ -83,14 +94,9 @@
                 "speech" : {},
                 "push" : {
                     "igexin" : {
-                        "appid" : "K2sHf8ttjSAC57AMDqNjP8",
-                        "appkey" : "8XJxTgqPtM94Saq7fQXqx1",
-                        "appsecret" : "572BJ9wwkc5QoTSlmYlIm8"
-                    },
-                    "unipush" : {
-                        "version" : "2",
-                        "offline" : true,
-                        "hms" : {}
+                        "appid" : "dy1QjA6kRQ6GAAo1KWr7T6",
+                        "appkey" : "AitTN0u3id5BKimUW4Uqd4",
+                        "appsecret" : "crWccyXY7y7Lf4K8kJsO98"
                     }
                 }
             },
@@ -98,9 +104,9 @@
                 "androidStyle" : "default",
                 "iosStyle" : "default",
                 "android" : {
-                    "hdpi" : "/static/start1.9.png",
-                    "xhdpi" : "/static/start1.9.png",
-                    "xxhdpi" : "/static/start1.9.png"
+                    "hdpi" : "/static/bg.jpg",
+                    "xhdpi" : "/static/bg.jpg",
+                    "xxhdpi" : "/static/bg.jpg"
                 }
             },
             "icons" : {
@@ -179,20 +185,6 @@
                     "parameters" : {}
                 }
             },
-            "Ba-FloatWinNotification" : {
-                "__plugin_info__" : {
-                    "name" : "悬浮窗-通知 Ba-FloatWinNotification",
-                    "description" : "Ba-FloatWinNotification 是一款定制的通知悬浮窗插件，有其他定制需要可联系作者。",
-                    "platforms" : "Android",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=14258",
-                    "android_package_name" : "com.hnkns.kechat",
-                    "ios_bundle_id" : "",
-                    "isCloud" : true,
-                    "bought" : 1,
-                    "pid" : "14258",
-                    "parameters" : {}
-                }
-            },
             "Tuoyun-OpenIMSDK" : {
                 "__plugin_info__" : {
                     "name" : "OpenIM SDK",
@@ -205,6 +197,174 @@
                     "bought" : 1,
                     "pid" : "6577",
                     "parameters" : {}
+                }
+            },
+            "JG-JCore" : {
+                "JPUSH_APPKEY_ANDROID" : "8d144bfe784f4b7150f3218b",
+                "JPUSH_APPKEY_IOS" : "",
+                "JPUSH_CHANNEL_ANDROID" : "",
+                "JPUSH_CHANNEL_IOS" : "",
+                "__plugin_info__" : {
+                    "name" : "极光推送 JCore 官方 SDK",
+                    "description" : "极光推送 JCore 官方 SDK HBuilder 插件版本",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=4028",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "4028",
+                    "parameters" : {
+                        "JPUSH_APPKEY_ANDROID" : {
+                            "des" : "[Android]极光portal配置应用信息时分配的AppKey",
+                            "key" : "JPUSH_APPKEY",
+                            "value" : ""
+                        },
+                        "JPUSH_APPKEY_IOS" : {
+                            "des" : "[iOS]极光portal配置应用信息时分配的AppKey",
+                            "key" : "JCore:APP_KEY",
+                            "value" : ""
+                        },
+                        "JPUSH_CHANNEL_ANDROID" : {
+                            "des" : "[Android]用于统计分发渠道，不需要可填默认值developer-default",
+                            "key" : "JPUSH_CHANNEL",
+                            "value" : ""
+                        },
+                        "JPUSH_CHANNEL_IOS" : {
+                            "des" : "[iOS]用于统计分发渠道，不需要可填默认值developer-default",
+                            "key" : "JCore:CHANNEL",
+                            "value" : ""
+                        }
+                    }
+                }
+            },
+            "JG-JPush" : {
+                "JPUSH_ADVERTISINGID_IOS" : "",
+                "JPUSH_DEFAULTINITJPUSH_IOS" : "",
+                "JPUSH_GOOGLE_API_KEY" : "",
+                "JPUSH_GOOGLE_APP_ID" : "",
+                "JPUSH_GOOGLE_PROJECT_ID" : "",
+                "JPUSH_GOOGLE_PROJECT_NUMBER" : "",
+                "JPUSH_GOOGLE_STORAGE_BUCKET" : "",
+                "JPUSH_HONOR_APPID" : "",
+                "JPUSH_HUAWEI_APPID" : "appid=111077343",
+                "JPUSH_ISPRODUCTION_IOS" : "",
+                "JPUSH_MEIZU_APPID" : "",
+                "JPUSH_MEIZU_APPKEY" : "",
+                "JPUSH_OPPO_APPID" : "",
+                "JPUSH_OPPO_APPKEY" : "",
+                "JPUSH_OPPO_APPSECRET" : "",
+                "JPUSH_VIVO_APPID" : "",
+                "JPUSH_VIVO_APPKEY" : "",
+                "JPUSH_XIAOMI_APPID" : "",
+                "JPUSH_XIAOMI_APPKEY" : "",
+                "__plugin_info__" : {
+                    "name" : "极光推送 JPush 官方 SDK",
+                    "description" : "极光推送JPush官方SDK HBuilder插件版本",
+                    "platforms" : "Android,iOS",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=4035",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "4035",
+                    "parameters" : {
+                        "JPUSH_ADVERTISINGID_IOS" : {
+                            "des" : "[iOS]广告标识符（IDFA）如果不需要使用IDFA，可不填",
+                            "key" : "JPush:ADVERTISINGID",
+                            "value" : ""
+                        },
+                        "JPUSH_DEFAULTINITJPUSH_IOS" : {
+                            "des" : "[iOS]是否默认初始化，是填true，不是填false或者不填",
+                            "key" : "JPush:DEFAULTINITJPUSH",
+                            "value" : ""
+                        },
+                        "JPUSH_GOOGLE_API_KEY" : {
+                            "des" : "厂商google api_key,示例:g-12346578",
+                            "key" : "google_api_key",
+                            "value" : ""
+                        },
+                        "JPUSH_GOOGLE_APP_ID" : {
+                            "des" : "厂商google mobilesdk_app_id,示例：g-12346578",
+                            "key" : "google_app_id",
+                            "value" : ""
+                        },
+                        "JPUSH_GOOGLE_PROJECT_ID" : {
+                            "des" : "厂商google project_id ,示例：g-12346578",
+                            "key" : "project_id",
+                            "value" : ""
+                        },
+                        "JPUSH_GOOGLE_PROJECT_NUMBER" : {
+                            "des" : "厂商google project_number,示例：g-12346578",
+                            "key" : "gcm_defaultSenderId",
+                            "value" : ""
+                        },
+                        "JPUSH_GOOGLE_STORAGE_BUCKET" : {
+                            "des" : "厂商google storage_bucket,示例：g-12346578",
+                            "key" : "google_storage_bucket",
+                            "value" : ""
+                        },
+                        "JPUSH_HONOR_APPID" : {
+                            "des" : "厂商HONOR-appId,示例：12346578",
+                            "key" : "com.hihonor.push.app_id",
+                            "value" : ""
+                        },
+                        "JPUSH_HUAWEI_APPID" : {
+                            "des" : "厂商HUAWEI-appId,示例：appid=12346578",
+                            "key" : "com.huawei.hms.client.appid",
+                            "value" : ""
+                        },
+                        "JPUSH_ISPRODUCTION_IOS" : {
+                            "des" : "[iOS]是否是生产环境，是填true，不是填false或者不填",
+                            "key" : "JPush:ISPRODUCTION",
+                            "value" : ""
+                        },
+                        "JPUSH_MEIZU_APPID" : {
+                            "des" : "厂商MEIZU-appId,示例：MZ-12345678",
+                            "key" : "MEIZU_APPID",
+                            "value" : ""
+                        },
+                        "JPUSH_MEIZU_APPKEY" : {
+                            "des" : "厂商MEIZU-appKey,示例：MZ-12345678",
+                            "key" : "MEIZU_APPKEY",
+                            "value" : ""
+                        },
+                        "JPUSH_OPPO_APPID" : {
+                            "des" : "厂商OPPO-appId,示例：OP-12345678",
+                            "key" : "OPPO_APPID",
+                            "value" : ""
+                        },
+                        "JPUSH_OPPO_APPKEY" : {
+                            "des" : "厂商OPPO-appkey,示例：OP-12345678",
+                            "key" : "OPPO_APPKEY",
+                            "value" : ""
+                        },
+                        "JPUSH_OPPO_APPSECRET" : {
+                            "des" : "厂商OPPO-appSecret,示例：OP-12345678",
+                            "key" : "OPPO_APPSECRET",
+                            "value" : ""
+                        },
+                        "JPUSH_VIVO_APPID" : {
+                            "des" : "厂商VIVO-appId,示例：12345678",
+                            "key" : "com.vivo.push.app_id",
+                            "value" : ""
+                        },
+                        "JPUSH_VIVO_APPKEY" : {
+                            "des" : "厂商VIVO-appkey,示例：12345678",
+                            "key" : "com.vivo.push.api_key",
+                            "value" : ""
+                        },
+                        "JPUSH_XIAOMI_APPID" : {
+                            "des" : "厂商XIAOMI-appId,示例：MI-12345678",
+                            "key" : "XIAOMI_APPID",
+                            "value" : ""
+                        },
+                        "JPUSH_XIAOMI_APPKEY" : {
+                            "des" : "厂商XIAOMI-appKey,示例：MI-12345678",
+                            "key" : "XIAOMI_APPKEY",
+                            "value" : ""
+                        }
+                    }
                 }
             }
         },
