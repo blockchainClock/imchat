@@ -4,8 +4,8 @@
 // const wsUrl = 'wss://web.rentsoft.cn/msg_gateway'
 // 119.8.104.83
 // 192.168.43.36
-const baseHttpUrl = 'http://119.8.104.83'
-const baseWsUrl = 'ws://119.8.104.83'
+const baseHttpUrl = 'http://192.168.43.36'
+const baseWsUrl = 'ws://192.168.43.36'
 
 const registerUrl = baseHttpUrl + ':10008' //chat.keynes.com
 const configUrl = baseHttpUrl + ':10009'  // chat-admin.keynes.com

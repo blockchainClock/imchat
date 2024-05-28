@@ -1,0 +1,669 @@
+<template>
+	<view  :class="smallFlag ? 'small-window' : 'wrap'">
+		<view class="big" v-if="!channel.isAudio">
+			<rtc-surface-view class="flex-sub" :uid="transpose?uid:0"></rtc-surface-view>
+		</view>
+		<view v-if="!channel.isAudio&&connected&&uid" ref="small" @touchstart="start" @touchend="end" class="small">
+			<rtc-surface-view class="flex-sub" :uid="!transpose?uid:0"></rtc-surface-view>
+		</view>
+		
+		<view  v-if="channel.isAudio" style="margin: 50px 0 0 50px;" @click="smallWindow">
+			<text class="iconfont text-white font-56">&#xe8b2;</text>
+		</view>
+		
+		<view class="audio-head" v-if="channel.isAudio">
+			<image class="avatar" :src="channinfo.avatar" mode="aspectFill"></image>
+			<text class="text-white font-36 m-t-30">{{channinfo.userName}}</text>
+			<text class="text-white font-26 m-t-30" v-if="to&&!connected">正在等待对方接受邀请......</text>
+		</view>
+		<view class="video-head" v-if="!connected&&!channel.isAudio">
+			<image class="avatar" :src="channinfo.avatar" mode="aspectFill"></image>
+			<!-- <image class="avatar" src="@/static/images/logo.png" mode="aspectFill"></image> -->
+			
+			<text class="text-white font-36">{{channinfo.userName}}</text>
+			<view style="height: 30px;"></view>
+			<text class="text-white font-26" v-if="to&&!connected">正在等待对方接受邀请......</text>
+			
+		</view>
+		<view class="bottom">
+			<view class="row around" v-if="connected">
+				<text class="text-white font-26">{{duration|time}}</text>
+			</view>
+			
+			<view class="row around m-t-30">
+				<view class="center" v-if="channel.isAudio" @tap="switchMute">
+					<view class="round btn" :class="{'bg-white':isMute}" style="border: 1rpx solid #ffffff;">
+						<text class="iconfont font-56" :class="{'text-white':!isMute}">{{isMute?'&#xe642;':'&#xe641;'}}</text>
+					</view>
+					<text class="m-t-20 text-white font-26">静音</text>
+				</view>
+				<view class="center" v-if="connected&&!channel.isAudio" @tap="switchAudio">
+					<view class="round btn" style="border: 1rpx solid #ffffff;">
+						<text class="iconfont text-white font-56">&#xe70a;</text>
+					</view>
+					<text class="m-t-20 text-white font-26">切到语音</text>
+				</view>
+				<view class="center" v-if="connected" @tap="hangUp">
+					<view class="round btn" style="background-color: #e83223;">
+						<text class="iconfont text-white font-56">&#xe616;</text>
+					</view>
+					<text class="m-t-20 text-white font-26">挂断</text>
+				</view>
+				<view class="center" v-else @tap="cancel">
+					<view class="round btn" style="background-color: #e83223;">
+						<text class="iconfont text-white font-56">&#xe616;</text>
+					</view>
+					<text class="m-t-20 text-white font-26">取消</text>
+				</view>
+				<view class="center" v-if="channel.isAudio" @tap="switchSpeaker">
+					<view class="round btn" :class="{'bg-white':isSpeaker}" style="border: 1rpx solid #ffffff;">
+						<text class="iconfont font-56" :class="{'text-white':!isSpeaker}">&#xe803;</text>
+					</view>
+					<text class="m-t-20 text-white font-26">免提</text>
+				</view>
+				<view class="center" v-if="connected&&!channel.isAudio" @tap="switchCamera">
+					<view class="round btn" style="border: 1rpx solid #ffffff;">
+						<text class="iconfont text-white font-56">&#xe6ee;</text>
+					</view>
+					<text class="m-t-20 text-white font-26">转换摄像头</text>
+				</view>
+			</view>
+		</view>
+	</view>
+</template>
+
+<script>
+	// import {ajax} from "@/utils/ajaxNew.js"  //新版本
+	// import {ajax} from "@/utils/ajax.js" //旧版本
+	// import {dictateTypes} from "@/IM/msg.js"
+	import {agora} from "@/util/constant.js"
+	import permision from "@/util/permission.js";
+	import RtcEngine from '@/components/Agora-RTC-JS/index';
+	import RtcSurfaceView from '@/components/Agora-RTC-JS/RtcSurfaceView.nvue';
+	import {mapGetters,mapMutations,mapActions} from "vuex"
+	import { CustomType } from "@/constant/im";
+	// import { callEvent } from "@/util/call.js";
+	import {delay,goback} from "@/util/util.js"
+	const BindingX = uni.requireNativePlugin('bindingx');
+	let listeners = []
+	export default {
+		components:{
+			RtcSurfaceView
+		},
+		data() {
+			return {
+				channel:{
+					msg:{ 
+						content:"[占线]", 
+						status: "",
+						errMsg: "" ,
+					},
+					channelId:"",
+					isAudio:false,
+				},
+				channinfo:{},
+				engine: this.$store.getters['RTC/engine'],//声网实例对象
+				token:"",//通话鉴权token
+				to:null,//拨打给哪个id,如果没有值说明是接听者
+				connected:false,//是否已经接通
+				duration:0,//通话时长
+				timer:null,//计算通话时长的定时器
+				uid:null,//对方的uid,此id为声网分配的id,本地的id固定为0
+				transpose:false,//大小窗口是否发生互换
+				isMute:false ,//是否静音
+				isSpeaker:true ,//是否打开免提,
+				overtime:null ,//拨打超时计时器
+				smallFlag:false,
+				systemInfo:null,
+				offset:{ //偏移量
+					x:0,
+					y:0,
+					//相对原始位置的可偏移极限值
+					minX:0, //x轴的最小偏移值
+					maxX:0, //x轴的最大偏移值
+					minY:0, //y轴的最小偏移值
+					maxY:0	//y轴的最大偏移值
+				},
+				startTime:0 ,//触摸开始的时间戳
+				
+				bellCtx:uni.createInnerAudioContext()
+			}
+		},
+		
+		computed:{
+			// ...mapGetters('chat',['channel']),
+			// ...mapGetters('user',['userInfo']),
+			...mapGetters([
+			  "storeCurrentConversation",
+			  "storeSelfInfo",
+			  "storeCallingInfo"
+			]),
+			chat(){
+				return getApp().globalData.chat
+			}
+		},
+		filters:{
+			time(val=0){
+				const m = Math.floor(val/60)
+				const s = val%60
+				return `${m>9?m:'0'+m}:${s>9?s:'0'+s}`
+			}
+		},
+		beforeCreate() {
+			const domModule = weex.requireModule('dom');
+			domModule.addRule('fontFace', {
+				'fontFamily': "iconfont",
+				'src': "url('/static/font/iconfont.ttf')"
+			});
+		},
+		created() {
+			this.systemInfo = uni.getSystemInfoSync()
+			this.offset.minX = uni.upx2px(230) - this.systemInfo.windowWidth;
+			this.offset.maxX = uni.upx2px(30)
+			this.offset.minY = -uni.upx2px(200)
+			this.offset.maxY = this.systemInfo.windowHeight - uni.upx2px(500)
+		},
+		async onLoad(options) {
+			
+			clearInterval(this.timer)
+			this.token = uni.getStorageSync('videoToken');
+			let channinfo = this.storeCallingInfo;
+			this.channinfo = channinfo;
+			
+			this.to = channinfo.to ? channinfo.to : false;
+			this.channel.channelId = channinfo.conversationID;
+			this.channel.isAudio = channinfo.mediaType =='audio' ? true : false;
+			this.duration =  this.$store.getters['RTC/time']
+			console.log('this.channel.isAudio', this.channel.isAudio)
+			
+			if(!!this.engine){
+				this.addListeners()
+				this.connected = true;
+				this.uid =  this.$store.getters['RTC/uid'];
+				this.timer = setInterval(()=>{
+					this.duration =  this.$store.getters['RTC/time']
+				},1000)
+				if(!this.channel.isAudio){
+					this.transpose = true
+					
+					await this.engine.enableAudio();
+					this.engine.setDefaultAudioRoutetoSpeakerphone(this.isSpeaker)
+					
+					
+				}else{
+					await this.engine.enableVideo();
+					await this.engine.startPreview();
+				}
+				return;
+			}
+			
+			
+			console.log('room info.............',channinfo)
+			this.bellCtx.loop = true
+			this.bellCtx.src = '/static/voice/bell.mp3'
+			uni.$on('call' + CustomType.CallingReject,()=>{
+				console.log('对方已拒绝')
+				if(this.channel.msg){
+					// this.channel.msg.content='[已拒绝]'
+					this.bellCtx.stop();
+					setTimeout(()=>{
+						this.leaveChannel()
+					},2000)
+				}
+			})
+			uni.$on('call' + CustomType.CallingHungup,()=>{
+				if(this.channel.msg){
+					// this.channel.msg.content='[已挂断]'
+					setTimeout(()=>{
+						this.leaveChannel()
+					},2000)
+					
+				}
+			})
+			
+			try{
+				this.engine = await this.initRTC()
+				this.addListeners()
+				if(this.channel.isAudio){
+					await this.engine.enableAudio();
+					this.engine.setDefaultAudioRoutetoSpeakerphone(this.isSpeaker)
+				}else{
+					await this.engine.enableVideo();
+					await this.engine.startPreview();
+				}
+				// await this.getToken()
+				await this.joinChannel()
+				uni.setKeepScreenOn({keepScreenOn: true})
+			}catch(e){
+				console.log('error', e)
+				await delay(1000)
+				uni.navigateBack()
+			}
+		},
+		onUnload() {
+			uni.$off("callBusy")
+			uni.$off("callReject")
+			this.bellCtx.destroy()
+			// this.destroyRTC();
+			uni.setKeepScreenOn({keepScreenOn: false})
+			clearInterval(this.timer)
+			//离开页面,清理vuex中的频道信息
+			// this.setChannel(null)
+		},
+		onBackPress({from}) {
+			return from=='backbutton'
+		},
+		methods: {
+			...mapActions('RTC',['initRTC','destroyRTC']),
+			async getToken(){ //通过房间号向后台换取token
+			//新版本
+				// let tokenData = await ajax({
+				// 	url:'',///agora/createChannel
+				// 	data:{
+				// 		channelName:this.channel.channelId
+				// 	}
+				// })
+				// this.token=tokenData.token;
+				// console.log(this.token,'this.token')
+				//旧版本
+				// this.token = await ajax({
+				// 	url:'',///agora/createChannel
+				// 	data:{
+				// 		channelName:this.channel.channelId
+				// 	}
+				// })
+			},
+			smallWindow(){
+				// this.smallFlag = true;
+				if(!this.channel.isAudio) return;
+				let css = {
+					'padding':'5px',
+					'width':'60px',
+					'height':'60px',
+					'line-height':'25px',
+					'background':"#ffd500",
+					"color":"#000"
+				}
+				let params = {
+					webUrl: "file:///android_asset/index.html?data=1&css=" + JSON.stringify(css),//网页地址
+					width:90,//宽度 px
+					height: 110,//高度 px
+					xRatio: 0.75,//x轴偏移量（屏幕宽度比例）
+					yRatio: 0,//y轴偏移量（屏幕高度比例）
+				}
+				clearInterval(this.timer)
+				uni.$openWebview.show(params,
+				   (res) => {
+				   console.log(res);
+				});
+				uni.navigateBack()
+				
+			},
+			addListeners() { //初始化监听
+				listeners = [
+					{
+						//自己加入房间成功
+						event:'JoinChannelSuccess',
+						handle:(channel, uid, elapsed)=>{
+							if(this.to){
+								this.bellCtx.play()
+								//拨打者需开启超时,若30秒对方都未接通,则修改消息状态并退出房间
+								this.overtime = setTimeout(()=>{
+									this.channel.msg.content='[接听超时]'
+									this.cancel();
+									// this.leaveChannel()
+								},30000)
+							}
+						}
+					},
+					{
+						//对方加入房间,即对方接通了通话
+						event:'UserJoined',
+						handle:(uid, elapsed)=>{
+							console.info('UserJoined///////////', uid, elapsed);
+							this.connected = true
+							//接通后立即清理接听超时
+							clearTimeout(this.overtime)
+							this.bellCtx.stop()
+							this.uid = uid
+							//开始通话时间计时
+							this.timer = setInterval(()=>{
+								this.duration =  this.$store.getters['RTC/time']
+							},1000)
+							//如果是视频则交换大小窗口
+							if(!this.channel.isAudio){
+								this.transpose = true
+								this.$nextTick(()=>{
+									this.start()
+								})
+							}
+						}
+					},
+					{
+						//有用户离开通话房间,即对方结束通话
+						event:'UserOffline',
+						handle:(uid, reason)=>{
+							console.info('UserOffline', uid, reason);
+							//对方离开后立即复原大小窗口
+							this.transpose = false
+							this.leaveChannel()
+						}
+					},
+					{
+						//自己离开通话房间
+						event:'LeaveChannel',
+						handle:(stats)=>{
+							//清理通话时间计时
+							this.removeListeners()
+							clearInterval(this.timer)
+							if(this.to){
+								//离开房间就将持久化消息发出
+								// this.channel.msg.extras.duration = this.duration
+								// this.chat.send(this.channel.msg).then(()=>{
+								// 	this.channel.msg.status = 'success';
+								// }).catch((e)=>{
+								// 	this.channel.msg.status = 'error';
+								// 	this.channel.msg.errMsg = e.message
+								// })
+								// this.saveConversationMap()
+							}
+						}
+					},
+					{
+						//对方切换成语音通话
+						event:'UserEnableVideo',
+						handle:(uid,enabled)=>{
+							// this.switchAudio()
+							if(uid==this.uid&&!enabled){
+								this.switchAudio()
+							}
+						}
+					},
+					{
+						//
+						event:'Error',
+						handle:(err)=>{
+							console.error("Error",err)
+							this.leaveChannel()
+						}
+					},
+				]
+				listeners.forEach(({event,handle})=>{
+					console.log(event)
+					this.engine.addListener(event,handle)
+				})
+				
+			},
+			removeListeners(){ //移除监听
+				listeners.forEach(({event,handle})=>{
+					this.engine.removeListener(event,handle)
+				})
+			},
+			async joinChannel() { //加入房间
+				if (uni.getSystemInfoSync().platform === 'android') {
+					await permision.requestAndroidPermission('android.permission.RECORD_AUDIO');
+					await permision.requestAndroidPermission('android.permission.CAMERA');
+				}
+				console.log('加入房间岑书：', this.token, this.channel.channelId)
+				await this.engine &&
+					this.engine.joinChannel(
+						this.token,
+						this.channel.channelId,
+						null,
+						0
+					);
+			},
+			async leaveChannel() { //离开房间
+				await this.engine && this.engine.leaveChannel();
+				this.$store.commit("message/SET_CALL_INFO", null)
+				this.destroyRTC()
+				this.bellCtx.stop()
+				uni.$openWebview.hide()
+				uni.navigateBack()
+			},
+			async hangUp(){//挂断电话
+				let params = this.channinfo;
+				params.time = this.duration;
+				params.customType = CustomType.CallingHungup
+				params.userID = this.storeSelfInfo.userID
+				// this.callEvent(CustomType.CallingHungup, params, this.storeSelfInfo.userID,()=>{
+				// 	this.leaveChannel()
+				// 	uni.navigateBack()
+				// })
+				this.bellCtx.stop()
+				uni.$emit('callsend', params)
+				this.leaveChannel();
+			},
+			async cancel(){//取消电话,未接通才可挂断
+				//发送取消指令,然后调用离开方法
+				// this.chat.dictate({
+				// 	to:this.to,
+				// 	msgType:dictateTypes.cancelCall,
+				// 	content:"[取消通话]",
+				// 	extras:{
+				// 		roomId:this.channel.channelId,
+				// 		from:{
+				// 			userId:this.userInfo.userId,
+				// 			userName:this.userInfo.userName,
+				// 			avatarUrl:this.userInfo.avatarUrl
+				// 		},
+				// 		isAudio:this.channel.isAudio
+				// 	}
+				// })
+				// this.channel.msg.content = "[取消通话]"
+				let params = this.channinfo;
+				params.customType = CustomType.CallingCancel
+				params.userID = this.storeSelfInfo.userID
+				uni.$emit('callsend',params)
+				this.leaveChannel()
+				this.bellCtx.stop()
+				// callEvent(CustomType.CallingCancel, params, this.storeSelfInfo.userID,()=>{
+				// 	this.leaveChannel()
+				// 	uni.navigateBack()
+				// })
+				
+			},
+			async switchAudio(){//切换语音通话
+				this.channel.isAudio = true;
+				await this.engine.disableVideo()
+				await this.engine.setEnableSpeakerphone(false)
+				
+				// this.setChannel({
+				// 	...this.channel,
+				// 	isAudio:true
+				// })
+			},
+			async switchCamera(){//切换前后置摄像头
+				await this.engine.switchCamera()
+			},
+			async switchMute(){//切换静音
+				await this.engine.enableLocalAudio(this.isMute)
+				this.isMute = !this.isMute
+			},
+			async switchSpeaker(){
+				await this.engine.setEnableSpeakerphone(!this.isSpeaker)
+				this.isSpeaker = !this.isSpeaker
+			},
+			getEl(el) {
+			    if (typeof el === 'string' || typeof el === 'number') return el;
+				if (WXEnvironment) {
+				    return el.ref;
+				} else {
+				    return el instanceof HTMLElement ? el : el.$el;
+				}
+			},
+			
+			async start(e){
+				console.log("start",e)
+				this.startTime = e&&e.timeStamp||0
+				const rect = this.getEl(this.$refs.small)
+				
+				//手势
+				const offset = await new Promise((reolve)=>{
+					console.log(this.offset)
+					const {token} = BindingX.bind({
+						anchor:rect,
+						eventType:'pan',
+						props: [
+							  {
+								element:rect, 
+								property:'transform.translateX',
+								expression:`x+${this.offset.x}<${this.offset.minX}?${this.offset.minX}:(x+${this.offset.x}>${this.offset.maxX}?${this.offset.maxX}:x+${this.offset.x})`
+							  },
+							  {
+								element:rect, 
+								property:'transform.translateY',
+								expression:`y+${this.offset.y}<${this.offset.minY}?${this.offset.minY}:(y+${this.offset.y}>${this.offset.maxY}?${this.offset.maxY}:y+${this.offset.y})`
+							  }
+							]
+						}, 
+						(e)=>{
+							console.log(e)
+							if(e.state =='end'){
+								reolve({x:e.deltaX,y:e.deltaY})
+								BindingX.unbind({
+									token,
+									eventType:'pan'
+								})
+							}
+						}
+					)
+				})
+				const resx = this.offset.x+offset.x
+				const resy = this.offset.y+offset.y
+				this.offset.x=resx<this.offset.minX?this.offset.minX:(resx>this.offset.maxX?this.offset.maxX:resx)
+				this.offset.y=resy<this.offset.minY?this.offset.minY:(resy>this.offset.maxY?this.offset.maxY:resy)
+			},
+			end(e){
+				console.log('end',e,e.timeStamp-this.startTime)
+				if(e.timeStamp-this.startTime<100){
+					this.transpose = !this.transpose
+				}
+			}
+			
+		}
+	}
+</script>
+
+<style lang="scss">
+	.test{
+		position: fixed;
+		top: 200rpx;
+		left: 30rpx;
+		width: 300rpx;
+		height: 300rpx;
+		background-color: #00E168;
+	}
+	.iconfont {
+		font-family: "iconfont";
+		font-family: iconfont;
+	}
+	.center{
+		justify-content: center;
+		align-items: center;
+	}
+	.row{
+		flex-direction: row;
+	}
+	.around{
+		justify-content: space-around;
+	}
+	.round{
+		border-radius: 750rpx;
+	}
+	.flex-sub{
+		flex: 1;
+	}
+	.m-t-30{
+		margin-top: 30rpx;
+	}
+	.m-t-20{
+		margin-top: 20rpx;
+	}
+	.font-56{
+		font-size: 56rpx;
+	}
+	.font-36{
+		font-size: 36rpx;
+	}
+	.font-26{
+		font-size: 26rpx;
+	}
+	.text-white{
+		color: #FFFFFF;
+	}
+	.bg-white{
+		background-color: #FFFFFF;
+	}
+	.wrap{
+		
+		flex: 1;
+		background-color: #000000;
+	}
+	.small-window{
+		overflow: hidden;
+		width: 80px;
+		height: 80px;
+		position: absolute;
+		right: 20px;
+		top: 40px;
+		background-color: #000000;
+		border-radius: 10px;
+	}
+	.big{
+		position: absolute;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+	}
+	.small{
+		position: absolute;
+		top: 200rpx;
+		right: 30rpx;
+		width: 200rpx;
+		height: 300rpx;
+	}
+	.audio-head{
+		position: absolute;
+		top: 300rpx;
+		left: 0;
+		right: 0;
+		align-items: center;
+	}
+	.video-head{
+		position: absolute;
+		top: 240rpx;
+		left: 0;
+		right: 0;
+		padding-left: 30rpx;
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		// flex-direction: row;
+		// align-items: flex-start;
+	}
+	.video-head view{
+		text-align: center;
+	}
+	.avatar{
+		width:180rpx;
+		height: 180rpx;
+		/* border-radius: 100rpx; */
+	}
+	.bottom{
+		margin: 0 30rpx;
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		padding-bottom: 100rpx;
+	}
+	.btn{
+		width: 120rpx;
+		height: 120rpx;
+		align-items: center;
+		justify-content: center;
+	}
+</style>

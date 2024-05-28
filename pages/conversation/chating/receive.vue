@@ -89,8 +89,9 @@ import {getRtcConnectData} from "@/api/imApi.js"
 				//   this.storeSelfInfo.userID
 				// );
 				callEvent(CustomType.CallingAccept, this.customData, this.storeSelfInfo.userID,()=>{
+					this.$store.commit("message/SET_CALL_INFO", this.customData)
 					uni.redirectTo({
-						url:'/pages/conversation/chating/call?chainnInfo=' + JSON.stringify(this.customData)
+						url:'/pages/conversation/chating/imCall?chainnInfo=' + JSON.stringify(this.customData)
 					})
 				})
 			},

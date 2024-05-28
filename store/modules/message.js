@@ -7,10 +7,14 @@ const state = {
   previewImageList: [],
   hasMoreMessage: true,
   quoteMessage: undefined,
-  atUser:[]
+  atUser:[],
+  callingInfo:{}
 };
 
 const mutations = {
+  SET_CALL_INFO(state, info){
+	  state.callingInfo = info;
+  },
   SET_HISTORY_MESSAGE_LIST(state, list) {
     state.historyMessageList = [...list];
   },

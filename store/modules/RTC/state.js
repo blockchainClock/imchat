@@ -3,4 +3,5 @@ export default {
 	isDoing:false,
 	channel:'',
 	uid:'',
+	time:0
 }

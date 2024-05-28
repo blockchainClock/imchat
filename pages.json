@@ -311,6 +311,15 @@
 				
 		}
 	},{
+		"path": "pages/conversation/chating/imCall",
+		"style": {
+			"navigationBarTitleText": "%call%",
+			"enablePullDownRefresh": false,
+			"navigationBarTextStyle": "white",
+			"background": "transparent"
+				
+		}
+	},{
 		"path": "pages/conversation/chating/liveCall",
 		"style": {
 			"navigationBarTitleText": "%call%",

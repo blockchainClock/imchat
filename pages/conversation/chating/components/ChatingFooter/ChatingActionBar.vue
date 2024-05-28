@@ -58,13 +58,13 @@ export default {
 			  idx: 2,
 			  type: ChatingFooterActionTypes.Video,
 			  title: "视频通话",
-			  icon: require("static/images/chating_action_camera.png"),
+			  icon: require("static/images/videotab.png"),
 			},{
 			  idx: 3,
 			  type: ChatingFooterActionTypes.Audio,
 			  title: "语音通话",
-			  icon: require("static/images/chating_action_camera.png"),
-			},
+			  icon: require("static/images/audiotab.png"),
+			}
 		  ],
     };
   },
@@ -110,9 +110,9 @@ export default {
 			  params.userName = this.storeCurrentConversation.showName;
 			  params.sendID = this.storeSelfInfo.userID;
 			  params.to = this.storeCurrentConversation.userID;
-			 
+			 this.$store.commit("message/SET_CALL_INFO", params)
 			  uni.navigateTo({
-			  	url:'/pages/conversation/chating/call?chainnInfo=' + JSON.stringify(params)
+			  	url:'/pages/conversation/chating/imCall?chainnInfo=' + JSON.stringify(params)
 			  })
 		})
 	},

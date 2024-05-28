@@ -36,7 +36,24 @@ export const notify =  {
 	            type: "default",
 	          },
 	        }
-
+export const callWebView = () => {
+	let css = {
+		'padding':'5px',
+		'width':'60px',
+		'height':'60px',
+		'line-height':'25px'
+	}
+	let params = {
+		webUrl: "file:///android_asset/index.html?css=" + JSON.stringify(css),//网页地址
+		width:90,//宽度 px
+		height: 110,//高度 px
+		xRatio: 0.75,//x轴偏移量（屏幕宽度比例）
+		yRatio: 0,//y轴偏移量（屏幕高度比例）
+	}
+	uni.$openWebview.show(params,
+	   (res) => {
+	});
+}
 export const callEvent = async(customType,params, userid, callBack)=>{
 	try{
 		console.log('kaishi', params)

@@ -198,7 +198,10 @@ export default {
             verifyCode: this.loginInfo.verificationCode,
           });
           const { imToken, userID } = data;
-		      console.log('login',data)
+		  uni.$jv.setAlias({
+		  		'alias': userID + '',
+		  		'sequence': 1
+		  })
           // #ifdef H5 || MP-WEIXIN
           await IMSDK.asyncApi(IMSDK.IMMethods.Login, IMSDK.uuid(), {
             userID,
@@ -254,6 +257,7 @@ export default {
         key: "BusinessToken",
         data: chatToken,
       });
+	  console.log('token', imToken, chatToken, userID)
     },
     saveLoginInfo() {
       uni.setStorage({

@@ -19,6 +19,7 @@ export default {
   storePreviewImageList: (state) => state.message.previewImageList,
   storeHasMoreMessage: (state) => state.message.hasMoreMessage,
   storeQuoteMessage: (state) => state.message.quoteMessage,
+  storeCallingInfo:(state) => state.message.callingInfo ,
   storeSelfInfo: (state) => state.user.selfInfo,
   storeCurrentUserID: (state) => state.user.selfInfo.userID,
   storeAppConfig: (state) => state.user.appConfig,
@@ -26,4 +27,5 @@ export default {
   storeAuthData: (state) => state.user.authData,
   storeRootFontSize: (state) => state.user.rootFontSize,
   storeAtUser: (state) => state.message.atUser
+  
 };

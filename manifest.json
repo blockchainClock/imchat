@@ -171,20 +171,6 @@
                     "parameters" : {}
                 }
             },
-            "syczuan-notice" : {
-                "__plugin_info__" : {
-                    "name" : "Android iOS自定义本地通知",
-                    "description" : "创建本地通知，支持大图、通知等级设置等",
-                    "platforms" : "Android,iOS",
-                    "url" : "https://ext.dcloud.net.cn/plugin?id=13517",
-                    "android_package_name" : "com.hnkns.kechat",
-                    "ios_bundle_id" : "",
-                    "isCloud" : true,
-                    "bought" : 1,
-                    "pid" : "13517",
-                    "parameters" : {}
-                }
-            },
             "Tuoyun-OpenIMSDK" : {
                 "__plugin_info__" : {
                     "name" : "OpenIM SDK",
@@ -365,6 +351,20 @@
                             "value" : ""
                         }
                     }
+                }
+            },
+            "Ba-FloatWinWeb" : {
+                "__plugin_info__" : {
+                    "name" : "悬浮窗-任意界面 Ba-FloatWinWeb",
+                    "description" : "Ba-FloatWinWeb 是一款支持自定义任意界面的悬浮窗插件。采用webview方式，同时支持本地、网络地址；自带几种界面，可直接使用。",
+                    "platforms" : "Android",
+                    "url" : "https://ext.dcloud.net.cn/plugin?id=14471",
+                    "android_package_name" : "com.hnkns.kechat",
+                    "ios_bundle_id" : "",
+                    "isCloud" : true,
+                    "bought" : 1,
+                    "pid" : "14471",
+                    "parameters" : {}
                 }
             }
         },
