@@ -34,7 +34,7 @@ uni.$jv = jv;
 
 export default {
   onLaunch: function () {
-	 
+	
 	var globalEvent = uni.requireNativePlugin('globalEvent');
 	globalEvent.addEventListener('baFloatWinWeb', function(e) {
 		uni.$openWebview.hide()
@@ -144,10 +144,10 @@ export default {
 
       // sync
       const syncStartHandler = () => {
-        uni.showLoading({
-          title: "同步中",
-          mask: true,
-        });
+        // uni.showLoading({
+        //   title: "同步中",
+        //   mask: true,
+        // });
         this.$store.commit("user/SET_IS_SYNCING", true);
       };
       const syncFinishHandler = () => {
@@ -589,7 +589,7 @@ export default {
             IMSDK.IMMethods.GetLoginStatus,
             IMSDK.uuid(),
           );
-		 
+			console.log('登录失败',status)
           if (status === 3) {
             initStore();
             return;
@@ -598,7 +598,7 @@ export default {
           const IMToken = uni.getStorageSync("IMToken");
           const IMUserID = uni.getStorageSync("IMUserID");
 		  
-		  console.log('IMToken',IMToken)
+		  console.log('IMToken',IMToken, IMUserID)
 		  
           if (IMToken && IMUserID) {
             IMSDK.asyncApi(IMSDK.IMMethods.Login, IMSDK.uuid(), {

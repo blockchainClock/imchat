@@ -4,14 +4,14 @@
     <scroll-view
       class="scroll-view"
       scroll-y="true"
-      :refresher-enabled="true"
+      :refresher-enabled="false"
       :refresher-triggered="triggered"
       :scroll-top="scrollTop"
       :scroll-with-animation="true"
       @scroll="scroll"
       @refresherrefresh="onRefresh"
       @refresherrestore="onRestore"
-			@scrolltolower="scrolltolower"
+		@scrolltolower="scrolltolower"
     >
 	<view style="height: 20rpx;"></view>
       <u-swipe-action
@@ -28,10 +28,11 @@
           ref="conversationItem"
         />
       </u-swipe-action>
+	  <view style="height: 100rpx;"></view>
     </scroll-view>
-    <view class="loading_wrap" v-if="storeIsSyncing">
+    <!-- <view class="loading_wrap" v-if="storeIsSyncing">
       <u-loading-icon text="同步中"></u-loading-icon>
-    </view>
+    </view> -->
   </view>
 </template>
 
@@ -138,11 +139,11 @@ export default {
 	  })
     },
     scrolltolower() {
+		console.log(124)
       this.queryList()
     },
     async queryList(isFirstPage = false) {
 		let _this = this;
-		
 		this.triggered = true;
 		try{
 			await this.$store.dispatch(

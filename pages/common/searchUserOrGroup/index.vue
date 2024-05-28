@@ -107,6 +107,7 @@ export default {
           );
           if (!info) {
             const { total, users } = await businessSearchUserInfo(this.keyword);
+			 console.log('搜索好友结果',total, users)
             if (total > 0) {
               const { data } = await IMSDK.asyncApi(
                 'getUsersInfoWithCache',
@@ -114,7 +115,7 @@ export default {
                 { userIDList:[users[0].userID] },
               );
               const imData = data[0]?.friendInfo ?? data[0]?.publicInfo ?? {};
-
+			 
               info = {
                 ...imData,
                 ...users[0],

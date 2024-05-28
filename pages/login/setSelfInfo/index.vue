@@ -244,7 +244,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .set_info_container {
-  margin-top: var(--status-bar-height);
+  padding-top: var(--status-bar-height);
   background: linear-gradient(
     180deg,
     rgba(0, 137, 255, 0.1) 0%,

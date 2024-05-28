@@ -148,6 +148,7 @@ export default {
       "storeCurrentGroup",
       "storeCurrentMemberInGroup",
       "storeBlackList",
+	  "storeSelfInfo"
     ]),
     getQuotedContent() {
 		console.log(this.storeQuoteMessage)
@@ -358,6 +359,7 @@ export default {
       }
       this.$emit("scrollToBottom");
 	  console.log('message', message)
+	  // offlinePushInfo.desc = this.storeSelfInfo.nickname
       IMSDK.asyncApi(IMMethods.SendMessage, IMSDK.uuid(), {
         recvID: this.storeCurrentConversation.userID,
         groupID: this.storeCurrentConversation.groupID,

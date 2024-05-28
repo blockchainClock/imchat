@@ -5,16 +5,44 @@
       "path": "pages/login/index"
     },
     {
-      "path": "pages/login/registerOrForget/index"
+      "path": "pages/login/registerOrForget/index",
+	  "style": {
+	    "navigationBarTitleText": "",
+	    "enablePullDownRefresh": false,
+	    "disableScroll": true,
+	  	"navigationStyle": "custom"
+	   
+	  }
     },
     {
-      "path": "pages/login/setSelfInfo/index"
+      "path": "pages/login/setSelfInfo/index",
+	  "style": {
+	    "navigationBarTitleText": "",
+	    "enablePullDownRefresh": false,
+	    "disableScroll": true,
+	  		"navigationStyle": "custom"
+	   
+	  }
     },
     {
-      "path": "pages/login/verifyCode/index"
+      "path": "pages/login/verifyCode/index",
+	  "style": {
+	    "navigationBarTitleText": "",
+	    "enablePullDownRefresh": false,
+	    "disableScroll": true,
+	  		"navigationStyle": "custom"
+	   
+	  }
     },
     {
-      "path": "pages/profile/index/index"
+      "path": "pages/profile/index/index",
+	  "style": {
+	    "navigationBarTitleText": "",
+	    "enablePullDownRefresh": false,
+	    "disableScroll": true,
+	  		"navigationStyle": "custom"
+	   
+	  }
     },
     {
       "path": "pages/conversation/conversationList/index",

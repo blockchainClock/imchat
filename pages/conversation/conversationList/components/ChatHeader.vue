@@ -18,7 +18,7 @@
 		            src="@/static/images/loading.png"
 		            alt=""
 		          />
-		          <text class="status">同步中</text>
+		          <!-- <text class="status">同步中</text> -->
 		        </view>
 		        <view class="tag" v-if="connectStart == 0">
 		          <image

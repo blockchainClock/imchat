@@ -14,18 +14,8 @@ const apiUrl = baseHttpUrl + ':10002'  // im.keynes.com
 // const configUrl = 'http://119.8.104.83:10009'
 // const apiUrl = 'http://119.8.104.83:10002'
 
-let wsUrl = ''
-
-// #ifdef APP-PLUS
-wsUrl = 'ws://119.8.104.83:10001'
-// #endif
-
-// #ifdef H5 || MP-WEIXIN
-wsUrl = 'ws://119.8.104.83:10001'
-// #endif
-
+let wsUrl = baseWsUrl + ':10001'
 const version = ''
-
 // 高德地图web api key  用于根据经纬度生成快照  当前key已绑定安卓包名  需要自行申请替换
 const AmapWebKey = "";
 

@@ -481,8 +481,8 @@ export const scanQrCodeResult = (result) => {
 };
 
 export const offlinePushInfo = {
-  title: "you have a new message",
-  desc: "you have a new message",
+  title: "你有一条新消息",
+  desc: "你有一条新消息",
   ex: "",
   iOSPushSound: "",
   iOSBadgeCount: true,

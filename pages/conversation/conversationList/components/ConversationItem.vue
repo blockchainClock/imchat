@@ -25,7 +25,7 @@
               :class="{ lastest_msg_prefix_active: needActivePerfix }"
               >{{ messagePrefix }}</text
             >
-            <text class="lastest_msg_content">{{ latestMessage }}</text>
+            <text class="lastest_msg_content">{{ latestMessage ? latestMessage : '' }}</text>
           </view>
         </view>
       </view>

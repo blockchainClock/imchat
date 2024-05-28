@@ -217,7 +217,9 @@ export default {
           await IMSDK.asyncApi(IMSDK.IMMethods.Login, IMSDK.uuid(), {
             userID,
             token: imToken,
-          });
+          }).then(res=>{}).catch(res=>{
+			  console.log('登录错误',res)
+		  });
           // #endif
 
           this.saveLoginProfile(data);

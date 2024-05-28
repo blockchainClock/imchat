@@ -5,9 +5,9 @@
     @scrolltoupper="scrolltoupper">
     <view id="scroll_wrap">
 		
-      <view v-if="loadMoreStatus !== 'nomore'">
+      <!-- <view v-if="loadMoreStatus !== 'nomore'">
         <u-loadmore nomoreText="" :status="loadMoreStatus" />
-      </view>
+      </view> -->
       <view v-for="(item, index) in storeHistoryMessageList" :key="item.clientMsgID" v-if="getshowCustomMessage(item)" >
         <view v-if="getTimeLine" class="time_gap_line">
           {{ getTimeLine(item, storeHistoryMessageList[index - 1]) }}

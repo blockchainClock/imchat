@@ -34,9 +34,8 @@ export default {
 			// engine.leaveChannel()
 		})
 		engine.addListener('UserJoined',(uid, elapsed)=>{
-			console.log('leave calling room',)
 			commit('setDoing',false)
-			commit('setUid','')
+			commit('setUid',uid)
 			commit('setChannel','')
 			let time = 0;
 			clearInterval(timer1)
@@ -52,7 +51,7 @@ export default {
 				let url = "file:///android_asset/index.html?css=" + JSON.stringify(css)
 				
 				uni.$openWebview.update({
-					webUrl: url + '&data=' + time.toString()
+					webUrl: url + '&data=' + time.toString() + 's'
 				},
 				   (res) => {
 				});
@@ -80,6 +79,7 @@ export default {
 			setTimeout(()=>{
 				commit('setCallTime',0)
 			},1000)
+			// uni.navigateBack()
 		})
 		uni.$on('call' + CustomType.CallingHungup,()=>{
 			engine.leaveChannel()
@@ -92,6 +92,7 @@ export default {
 			setTimeout(()=>{
 				commit('setCallTime',0)
 			},1000)
+			// uni.navigateBack()
 			
 		})
 		

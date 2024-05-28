@@ -50,14 +50,13 @@ const actions = {
         IMSDK.IMMethods.GetConversationListSplit,
         uuidv4(),
         {
-          offset: isFirstPage ? 0 : state.conversationList.length,
+          offset:  state.conversationList.length,
           count: 10,
         },
       );
-      commit("SET_CONVERSATION_LIST", [
-        ...(isFirstPage ? [] : state.conversationList),
-        ...data,
-      ]);
+	   let newlist = state.conversationList
+	  newlist = newlist.concat(data)
+      commit("SET_CONVERSATION_LIST", newlist);
       return [...data];
     } catch (e) {
       console.log(e);

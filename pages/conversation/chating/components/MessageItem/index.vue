@@ -153,23 +153,27 @@ export default {
       return this.storeCurrentConversation.conversationType === SessionType.Single;
     },
 	isSender2(){
-		if(this.source.contentType == 110){
+		// 音视频消息 只有邀请、取消、挂断类型显示 ， 
+		if(this.source.contentType == MessageType.CustomMessage){
 			let data = JSON.parse(this.source.customElem.data)
 			if(this.callRenderTypes.includes(data.customType)){
 				return this.storeSelfInfo.userID == data.inviterUserID ;
 			
-			}else if(this.customUserTypes.includes(data.customType)){
-				return this.storeSelfInfo.userID == this.source.sendID 
+			}else{
+				return this.storeSelfInfo.userID == this.source.sendID ;
 			}
+			// if(this.customUserTypes.includes(data.customType)){ //会议
+			// 	return this.storeSelfInfo.userID == this.source.sendID 
+			// }
 		}else{
 			return this.storeSelfInfo.userID == this.source.sendID
 		}
 	},
 	showTool(){
-		if(this.source.contentType == 110){
+		if(this.source.contentType == MessageType.CustomMessage){ //自定义会议消息可转发
 			let data = JSON.parse(this.source.customElem.data)
 			return data.customType == CustomType.Meeting;
-		}else{
+		}else if(this.source.contentType != MessageType.VoiceMessage){ //音频消息不可转发
 			return true;
 		}
 	},
@@ -177,7 +181,7 @@ export default {
       return formatMessageTime(this.source.sendTime);
     },
 	showMeetingRender(){
-		if(this.source.contentType == 110){
+		if(this.source.contentType == MessageType.CustomMessage){
 			let data = JSON.parse(this.source.customElem.data)
 			return data.customType == CustomType.Meeting;
 		}else{
@@ -224,10 +228,13 @@ export default {
 		  this.$emit('longclick', this.index)
 	},
 	messageAt(){
+		if(!this.$store.getters.storeCurrentConversation.groupID){
+			return;
+		}
 		uni.$emit('atUser',{userData:this.source})
 	},
 	getshowCustomMessage(types){
-		if(this.source.contentType == 110){
+		if(this.source.contentType == MessageType.CustomMessage){
 			let data = JSON.parse(this.source.customElem.data)
 			this.customType = data.customType;
 			if(types.includes(this.customType) && this.customType != 0){

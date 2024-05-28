@@ -7,7 +7,7 @@
 			<rtc-surface-view class="flex-sub" :uid="!transpose?uid:0"></rtc-surface-view>
 		</view>
 		
-		<view  v-if="channel.isAudio" style="margin: 50px 0 0 50px;" @click="smallWindow">
+		<view  style="margin: 50px 0 0 50px;" @click="smallWindow">
 			<text class="iconfont text-white font-56">&#xe8b2;</text>
 		</view>
 		
@@ -174,12 +174,32 @@
 			this.channel.channelId = channinfo.conversationID;
 			this.channel.isAudio = channinfo.mediaType =='audio' ? true : false;
 			this.duration =  this.$store.getters['RTC/time']
-			console.log('this.channel.isAudio', this.channel.isAudio)
+			
+			// uni.$on('call' + CustomType.CallingReject,()=>{
+			// 	console.log('对方已拒绝')
+			// 	if(this.channel.msg){
+			// 		// this.channel.msg.content='[已拒绝]'
+			// 		this.bellCtx.stop();
+			// 		setTimeout(()=>{
+			// 			this.leaveChannel()
+			// 		},2000)
+			// 	}
+			// })
+			// uni.$on('call' + CustomType.CallingHungup,()=>{
+			// 	if(this.channel.msg){
+			// 		// this.channel.msg.content='[已挂断]'
+			// 		setTimeout(()=>{
+			// 			this.leaveChannel()
+			// 		},2000)
+					
+			// 	}
+			// })
 			
 			if(!!this.engine){
 				this.addListeners()
 				this.connected = true;
 				this.uid =  this.$store.getters['RTC/uid'];
+				console.log('uid',this.uid)
 				this.timer = setInterval(()=>{
 					this.duration =  this.$store.getters['RTC/time']
 				},1000)
@@ -201,25 +221,7 @@
 			console.log('room info.............',channinfo)
 			this.bellCtx.loop = true
 			this.bellCtx.src = '/static/voice/bell.mp3'
-			uni.$on('call' + CustomType.CallingReject,()=>{
-				console.log('对方已拒绝')
-				if(this.channel.msg){
-					// this.channel.msg.content='[已拒绝]'
-					this.bellCtx.stop();
-					setTimeout(()=>{
-						this.leaveChannel()
-					},2000)
-				}
-			})
-			uni.$on('call' + CustomType.CallingHungup,()=>{
-				if(this.channel.msg){
-					// this.channel.msg.content='[已挂断]'
-					setTimeout(()=>{
-						this.leaveChannel()
-					},2000)
-					
-				}
-			})
+			
 			
 			try{
 				this.engine = await this.initRTC()
@@ -237,12 +239,14 @@
 			}catch(e){
 				console.log('error', e)
 				await delay(1000)
-				uni.navigateBack()
+				this.back()
 			}
 		},
 		onUnload() {
 			uni.$off("callBusy")
 			uni.$off("callReject")
+			uni.$off('call' + CustomType.CallingReject)
+			uni.$off('call' + CustomType.CallingHungup)
 			this.bellCtx.destroy()
 			// this.destroyRTC();
 			uni.setKeepScreenOn({keepScreenOn: false})
@@ -275,7 +279,7 @@
 			},
 			smallWindow(){
 				// this.smallFlag = true;
-				if(!this.channel.isAudio) return;
+				// if(!this.channel.isAudio) return;
 				let css = {
 					'padding':'5px',
 					'width':'60px',
@@ -296,7 +300,9 @@
 				   (res) => {
 				   console.log(res);
 				});
-				uni.navigateBack()
+				this.removeListeners()
+				this.back()
+				
 				
 			},
 			addListeners() { //初始化监听
@@ -414,12 +420,15 @@
 					);
 			},
 			async leaveChannel() { //离开房间
+				
 				await this.engine && this.engine.leaveChannel();
 				this.$store.commit("message/SET_CALL_INFO", null)
 				this.destroyRTC()
 				this.bellCtx.stop()
+				this.removeListeners()
 				uni.$openWebview.hide()
-				uni.navigateBack()
+				this.back()
+				
 			},
 			async hangUp(){//挂断电话
 				let params = this.channinfo;
@@ -433,6 +442,14 @@
 				this.bellCtx.stop()
 				uni.$emit('callsend', params)
 				this.leaveChannel();
+			},
+			back(){
+				var pages = getCurrentPages() ;
+				if(pages.length > 1){
+					uni.navigateBack()
+				}else{
+					return;
+				}
 			},
 			async cancel(){//取消电话,未接通才可挂断
 				//发送取消指令,然后调用离开方法
