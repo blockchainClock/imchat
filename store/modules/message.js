@@ -101,7 +101,6 @@ const actions = {
       }
     }
 	
-		console.log('================cancle', message)
     commit("SET_HISTORY_MESSAGE_LIST", [...state.historyMessageList, message]);
   },
  

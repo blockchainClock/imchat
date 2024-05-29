@@ -504,6 +504,7 @@
 				params.customType = CustomType.CallingCancel
 				params.userID = this.storeSelfInfo.userID
 				uni.$emit('callsend',params)
+				this.bellCtx.stop()
 				this.leaveChannel()
 				// callEvent(CustomType.CallingCancel, params, this.storeSelfInfo.userID,()=>{
 				// 	this.leaveChannel()

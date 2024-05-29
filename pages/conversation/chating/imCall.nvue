@@ -175,25 +175,9 @@
 			this.channel.isAudio = channinfo.mediaType =='audio' ? true : false;
 			this.duration =  this.$store.getters['RTC/time']
 			
-			// uni.$on('call' + CustomType.CallingReject,()=>{
-			// 	console.log('对方已拒绝')
-			// 	if(this.channel.msg){
-			// 		// this.channel.msg.content='[已拒绝]'
-			// 		this.bellCtx.stop();
-			// 		setTimeout(()=>{
-			// 			this.leaveChannel()
-			// 		},2000)
-			// 	}
-			// })
-			// uni.$on('call' + CustomType.CallingHungup,()=>{
-			// 	if(this.channel.msg){
-			// 		// this.channel.msg.content='[已挂断]'
-			// 		setTimeout(()=>{
-			// 			this.leaveChannel()
-			// 		},2000)
-					
-			// 	}
-			// })
+			uni.$on('call' + CustomType.CallingReject,()=>{
+				this.bellCtx.stop();
+			})
 			
 			if(!!this.engine){
 				this.addListeners()
@@ -217,8 +201,6 @@
 				return;
 			}
 			
-			
-			console.log('room info.............',channinfo)
 			this.bellCtx.loop = true
 			this.bellCtx.src = '/static/voice/bell.mp3'
 			
@@ -240,6 +222,7 @@
 				console.log('error', e)
 				await delay(1000)
 				this.back()
+				uni.navigateBack()
 			}
 		},
 		onUnload() {
@@ -249,6 +232,7 @@
 			uni.$off('call' + CustomType.CallingHungup)
 			this.bellCtx.destroy()
 			// this.destroyRTC();
+			this.removeListeners();
 			uni.setKeepScreenOn({keepScreenOn: false})
 			clearInterval(this.timer)
 			//离开页面,清理vuex中的频道信息
@@ -301,109 +285,61 @@
 				   console.log(res);
 				});
 				this.removeListeners()
-				this.back()
-				
+				uni.navigateBack()
+				console.log('当前页面',uni.getCurrentPages().length)
 				
 			},
 			addListeners() { //初始化监听
-				listeners = [
-					{
-						//自己加入房间成功
-						event:'JoinChannelSuccess',
-						handle:(channel, uid, elapsed)=>{
-							if(this.to){
-								this.bellCtx.play()
-								//拨打者需开启超时,若30秒对方都未接通,则修改消息状态并退出房间
-								this.overtime = setTimeout(()=>{
-									this.channel.msg.content='[接听超时]'
-									this.cancel();
-									// this.leaveChannel()
-								},30000)
-							}
-						}
-					},
-					{
-						//对方加入房间,即对方接通了通话
-						event:'UserJoined',
-						handle:(uid, elapsed)=>{
-							console.info('UserJoined///////////', uid, elapsed);
-							this.connected = true
-							//接通后立即清理接听超时
-							clearTimeout(this.overtime)
-							this.bellCtx.stop()
-							this.uid = uid
-							//开始通话时间计时
-							this.timer = setInterval(()=>{
-								this.duration =  this.$store.getters['RTC/time']
-							},1000)
-							//如果是视频则交换大小窗口
-							if(!this.channel.isAudio){
-								this.transpose = true
-								this.$nextTick(()=>{
-									this.start()
-								})
-							}
-						}
-					},
-					{
-						//有用户离开通话房间,即对方结束通话
-						event:'UserOffline',
-						handle:(uid, reason)=>{
-							console.info('UserOffline', uid, reason);
-							//对方离开后立即复原大小窗口
-							this.transpose = false
-							this.leaveChannel()
-						}
-					},
-					{
-						//自己离开通话房间
-						event:'LeaveChannel',
-						handle:(stats)=>{
-							//清理通话时间计时
-							this.removeListeners()
-							clearInterval(this.timer)
-							if(this.to){
-								//离开房间就将持久化消息发出
-								// this.channel.msg.extras.duration = this.duration
-								// this.chat.send(this.channel.msg).then(()=>{
-								// 	this.channel.msg.status = 'success';
-								// }).catch((e)=>{
-								// 	this.channel.msg.status = 'error';
-								// 	this.channel.msg.errMsg = e.message
-								// })
-								// this.saveConversationMap()
-							}
-						}
-					},
-					{
-						//对方切换成语音通话
-						event:'UserEnableVideo',
-						handle:(uid,enabled)=>{
-							// this.switchAudio()
-							if(uid==this.uid&&!enabled){
-								this.switchAudio()
-							}
-						}
-					},
-					{
-						//
-						event:'Error',
-						handle:(err)=>{
-							console.error("Error",err)
-							this.leaveChannel()
-						}
-					},
-				]
-				listeners.forEach(({event,handle})=>{
-					console.log(event)
-					this.engine.addListener(event,handle)
+				uni.$on('innerJoinChannelSuccess',(data)=>{
+					if(this.to){
+						this.bellCtx.play()
+						//拨打者需开启超时,若30秒对方都未接通,则修改消息状态并退出房间
+						this.overtime = setTimeout(()=>{
+							this.cancel();
+						},30000)
+					}
+				})
+				uni.$on('innerUserJoined',(data)=>{
+					console.log('innerUserJoined///////////');
+					this.connected = true
+					//接通后立即清理接听超时
+					clearTimeout(this.overtime)
+					this.bellCtx.stop()
+					this.uid = data.uid
+					//开始通话时间计时
+					this.timer = setInterval(()=>{
+						this.duration =  this.$store.getters['RTC/time']
+					},1000)
+					//如果是视频则交换大小窗口
+					if(!this.channel.isAudio){
+						this.transpose = true
+						this.$nextTick(()=>{
+							this.start()
+						})
+					}
+				})
+				uni.$on('innerUserOffline',(data)=>{
+					this.transpose = false
+					// this.engine.leaveChannel()
+				})
+				uni.$on('innerLeaveChannel',(data)=>{
+					this.removeListeners()
+					clearInterval(this.timer)
+					this.back()
+				})
+				uni.$on('innerUserEnableVideo',(data)=>{
+					if(data.uid==this.uid&&!data.enabled){
+						this.switchAudio()
+					}
 				})
 				
 			},
 			removeListeners(){ //移除监听
-				listeners.forEach(({event,handle})=>{
-					this.engine.removeListener(event,handle)
-				})
+				uni.$off('innerJoinChannelSuccess')
+				uni.$off('innerUserJoined')
+				uni.$off('innerUserOffline')
+				uni.$off('innerUserEnableVideo')
+				uni.$off('innerLeaveChannel')
 			},
 			async joinChannel() { //加入房间
 				if (uni.getSystemInfoSync().platform === 'android') {
@@ -419,11 +355,9 @@
 						0
 					);
 			},
-			async leaveChannel() { //离开房间
-				
-				await this.engine && this.engine.leaveChannel();
+			async leaveChannel(type) { //离开房间
+				console.log('type////////////',type)
 				this.$store.commit("message/SET_CALL_INFO", null)
-				this.destroyRTC()
 				this.bellCtx.stop()
 				this.removeListeners()
 				uni.$openWebview.hide()
@@ -435,21 +369,15 @@
 				params.time = this.duration;
 				params.customType = CustomType.CallingHungup
 				params.userID = this.storeSelfInfo.userID
-				// this.callEvent(CustomType.CallingHungup, params, this.storeSelfInfo.userID,()=>{
-				// 	this.leaveChannel()
-				// 	uni.navigateBack()
-				// })
+				
 				this.bellCtx.stop()
 				uni.$emit('callsend', params)
-				this.leaveChannel();
+				this.engine && this.engine.leaveChannel();
 			},
 			back(){
 				var pages = getCurrentPages() ;
-				if(pages.length > 1){
-					uni.navigateBack()
-				}else{
-					return;
-				}
+				this.bellCtx.stop();
+				console.log('返回')
 			},
 			async cancel(){//取消电话,未接通才可挂断
 				//发送取消指令,然后调用离开方法
@@ -472,12 +400,10 @@
 				params.customType = CustomType.CallingCancel
 				params.userID = this.storeSelfInfo.userID
 				uni.$emit('callsend',params)
-				this.leaveChannel()
+				this.leaveChannel(2)
 				this.bellCtx.stop()
-				// callEvent(CustomType.CallingCancel, params, this.storeSelfInfo.userID,()=>{
-				// 	this.leaveChannel()
-				// 	uni.navigateBack()
-				// })
+				this.engine && this.engine.leaveChannel();
+				
 				
 			},
 			async switchAudio(){//切换语音通话

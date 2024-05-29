@@ -156,7 +156,7 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
   };
   try{
   	
-  console.log('消息内容',pmsg )
+  // console.log('消息内容',pmsg )
   switch (pmsg.contentType) { //CustomType.CallingInvite 
     case MessageType.TextMessage:
       return `${pmsg.senderNickname}：${pmsg.textElem.content}`;

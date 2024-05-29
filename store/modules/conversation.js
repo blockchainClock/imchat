@@ -24,6 +24,7 @@ const mutations = {
         index: 0,
         text: count < 99 ? count + "" : "99+",
       });
+	  uni.$jv.setBadge(count < 99 ? count + "" : "99+")
     } else {
       uni.removeTabBarBadge({
         index: 0,

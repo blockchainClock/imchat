@@ -358,8 +358,8 @@ export default {
         // #endif
       }
       this.$emit("scrollToBottom");
-	  console.log('message', message)
-	  // offlinePushInfo.desc = this.storeSelfInfo.nickname
+	  offlinePushInfo.title = this.storeSelfInfo.nickname;
+	  // offlinePushInfo.desc = this.storeSelfInfo.nickname;
       IMSDK.asyncApi(IMMethods.SendMessage, IMSDK.uuid(), {
         recvID: this.storeCurrentConversation.userID,
         groupID: this.storeCurrentConversation.groupID,

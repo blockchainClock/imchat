@@ -1,18 +1,31 @@
 <template>
   <view class="chat_action_bar">
-    <u-row class="action_row">
+    <u-row class="action_row" v-if="!storeCurrentConversation.groupID">
       <u-col
         v-for="item in actionList"
         :key="item.idx"
         @click="actionClick(item)"
         span="3"
       >
-        <view class="action_item">
+        <view class="action_item" >
           <image :src="item.icon" alt="" srcset="" />
           <text class="action_item_title">{{ item.title }}</text>
         </view>
       </u-col>
     </u-row>
+	<u-row class="action_row" v-else="storeCurrentConversation.groupID">
+	  <u-col
+	    v-for="item in actionList.slice(0,2)"
+	    :key="item.idx"
+	    @click="actionClick(item)"
+	    span="3"
+	  >
+	    <view class="action_item" >
+	      <image :src="item.icon" alt="" srcset="" />
+	      <text class="action_item_title">{{ item.title }}</text>
+	    </view>
+	  </u-col>
+	</u-row>
   </view>
 </template>
 
@@ -117,6 +130,9 @@ export default {
 		})
 	},
     async actionClick(action) {
+		
+		
+		
 		if(!this.actionFlag) return;
 		this.actionFlag = false
       switch (action.type) {

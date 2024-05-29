@@ -67,7 +67,8 @@
                     "<uses-permission android:name=\"android.permission.WRITE_EXTERNAL_STORAGE\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>",
                     "<uses-permission android:name=\"android.permission.PUSH\"/>",
-                    "<uses-permission android:name=\"android.permission.SYSTEM_OVERLAY_WINDOW\"/>"
+                    "<uses-permission android:name=\"android.permission.SYSTEM_OVERLAY_WINDOW\"/>",
+                    "<uses-permission android:name=\"android.permission.USE_FULL_SCREEN_INTENT\"/>"
                 ],
                 "abiFilters" : [ "armeabi-v7a", "arm64-v8a" ],
                 "minSdkVersion" : 21
@@ -186,7 +187,7 @@
                 }
             },
             "JG-JCore" : {
-                "JPUSH_APPKEY_ANDROID" : "8d144bfe784f4b7150f3218b",
+                "JPUSH_APPKEY_ANDROID" : "b54014d1f073c71d91c33d9e",
                 "JPUSH_APPKEY_IOS" : "",
                 "JPUSH_CHANNEL_ANDROID" : "",
                 "JPUSH_CHANNEL_IOS" : "",
@@ -233,7 +234,7 @@
                 "JPUSH_GOOGLE_PROJECT_NUMBER" : "",
                 "JPUSH_GOOGLE_STORAGE_BUCKET" : "",
                 "JPUSH_HONOR_APPID" : "",
-                "JPUSH_HUAWEI_APPID" : "appid=111077343",
+                "JPUSH_HUAWEI_APPID" : "appid=111123811",
                 "JPUSH_ISPRODUCTION_IOS" : "",
                 "JPUSH_MEIZU_APPID" : "",
                 "JPUSH_MEIZU_APPKEY" : "",

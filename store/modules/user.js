@@ -54,6 +54,13 @@ const actions = {
         uuidv4(),
       );
       const { users } = await businessGetUserInfo(data.userID);
+	  setTimeout(function() {
+		  uni.$jv.setAlias({
+		  		'alias': data.userID + '',
+		  		'sequence': 1
+		  })
+	  }, 1000);
+	 
       const businessData = users[0] ?? {};
       filterEmptyValue(businessData);
       commit("SET_SELF_INFO", {

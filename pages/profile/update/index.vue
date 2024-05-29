@@ -92,7 +92,7 @@
 				if(uni.getSystemInfoSync().platform=='ios'){
 					this.link=this.updateInfo.DownloadUrl;
 				}else{
-					this.link=this.updateInfo.DownloadUrl;
+					this.link=this.updateInfo.DownloadUrl; 
 				}
 				let self=this;
 				if(!this.link) {

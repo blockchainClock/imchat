@@ -27,10 +27,6 @@ let pausing = false;
 const jv = uni.requireNativePlugin('JG-JPush');
 uni.$openWebview = floatWin;
 uni.$jv = jv;
-// jv.getRegistrationID(result=>{
-// 	let registerID = result.registerID
-// 	console.log('获取推送信息成功',registerID);
-// })	
 
 export default {
   onLaunch: function () {
@@ -58,7 +54,9 @@ export default {
   },
   onHide: function () {
     console.log("App Hide");
+	jv.setBadge(this.storeUnReadCount)
 	IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
+	
   },
   computed: {
     ...mapGetters([
@@ -70,6 +68,7 @@ export default {
       "storeRecvGroupApplications",
       "storeHistoryMessageList",
       "storeIsSyncing",
+	  "storeUnReadCount"
     ]),
     contactBadgeRely() {
       return {
@@ -530,6 +529,13 @@ export default {
         this.$store.dispatch("contact/getRecvGroupApplications");
         this.$store.dispatch("contact/getSentGroupApplications");
 		
+		uni.$jv.addTagAliasListener(result=>{
+							console.log('别名',result)
+		})
+		
+		uni.$jv.queryAlias({
+							'sequence': 1
+						})
         uni.switchTab({
           url: "/pages/conversation/conversationList/index?isRedirect=true",
         });
