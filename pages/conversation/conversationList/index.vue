@@ -20,8 +20,8 @@
         v-show="!storeIsSyncing"
       >
         <conversation-item
-          v-for="item in storeConversationList"
-          :key="item.conversationID"
+          v-for="(item,index) in storeConversationList"
+          :key="index"
 		   v-if="item.showName"
           @closeAllSwipe="closeAllSwipe"
           :source="item"
@@ -62,7 +62,6 @@ export default {
     ...mapGetters(["storeConversationList", "storeIsSyncing","storeUnReadCount"]),
   },
   onReady() {
-    console.log('会话列表',this.storeConversationList)
     // #ifdef APP-PLUS
     this.$nextTick(() => plus.navigator.closeSplashscreen());
     // #endif

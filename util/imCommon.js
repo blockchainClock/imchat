@@ -148,12 +148,15 @@ export const sec2Time = (seconds) => {
 
 export const parseMessageByType = (pmsg, isNotify = false) => {
   const isSelf = (id) => id === store.getters.storeCurrentUserID;
+  
   const getName = (user) => {
     return user.userID === store.getters.storeCurrentUserID
       ? "你"
       : user.nickname;
   };
-  
+  try{
+  	
+  console.log('消息内容',pmsg )
   switch (pmsg.contentType) { //CustomType.CallingInvite 
     case MessageType.TextMessage:
       return `${pmsg.senderNickname}：${pmsg.textElem.content}`;
@@ -162,6 +165,7 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
 	  return `${pmsg.senderNickname}：${pmsg.quoteElem.text}`;
 	  break;
     case MessageType.AtTextMessage:
+		console.log('@消息', pmsg)
       return `${pmsg.senderNickname}：${parseAt(pmsg.atTextElem, true)}`;
 	  break;
     case MessageType.PictureMessage:
@@ -259,6 +263,11 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
     default:
       return "";
   }
+  }catch(e){
+	  console.log('最先消息error', e)
+	  return '';
+  	//TODO handle the exception
+  }
 };
 
 export const formatConversionTime = (timestemp) => {
@@ -304,7 +313,7 @@ export const tipMessaggeFormat = (msg, currentUserID) => {
   const getUserID = (user) => user.userID;
 
   const parseInfo = (user) => formatHyperlink(getName(user), getUserID(user));
-
+	
   switch (msg.contentType) {
     case MessageType.FriendAdded:
 	

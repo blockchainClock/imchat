@@ -14,6 +14,7 @@
           :isNotify="isNotify"
           :src="source.faceURL"
           :desc="source.showName"
+		  
           size="46"
         />
         <view class="details">
@@ -25,7 +26,7 @@
               :class="{ lastest_msg_prefix_active: needActivePerfix }"
               >{{ messagePrefix }}</text
             >
-            <text class="lastest_msg_content">{{ latestMessage ? latestMessage : '' }}</text>
+            <text class="lastest_msg_content">{{ latestMessage}}</text>
           </view>
         </view>
       </view>
@@ -67,6 +68,9 @@ export default {
       default: () => {},
     },
   },
+  onLoad() {
+  	
+  },
   computed: {
     messagePrefix() {
       if (this.source.draftText !== "") {
@@ -98,7 +102,7 @@ export default {
             break;
         }
       }
-
+	  
       return prefix;
     },
     latestMessage() {
@@ -106,10 +110,14 @@ export default {
       let parsedMessage;
       try {
         parsedMessage = JSON.parse(this.source.latestMsg);
-      } catch (e) {}
+      } catch (e) {
+		  console.log('解析消息错误',e)
+		  return ""
+	  }
       if (!parsedMessage) return "";
-	  
-      return parseMessageByType(parsedMessage);
+	 
+	   return parseMessageByType(parsedMessage);
+      
     },
     needActivePerfix() {
       return this.source.groupAtType !== GroupAtType.AtNormal;

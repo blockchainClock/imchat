@@ -56,6 +56,7 @@ const actions = {
       );
 	   let newlist = state.conversationList
 	  newlist = newlist.concat(data)
+	  console.log('会话', newlist)
       commit("SET_CONVERSATION_LIST", newlist);
       return [...data];
     } catch (e) {
