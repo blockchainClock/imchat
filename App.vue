@@ -19,26 +19,59 @@ import { CustomType } from "@/constant/im";
 import { callEvent,notify } from "@/util/call.js";
 import permision from "@/util/permission.js";
 import {formatInputHtml} from "@/util/common.js"
+import player from '@/player/audio.js';
+	
 // const syczuanNotice = uni.requireNativePlugin("syczuan-notice");
 let cacheConversationList = [];
 let updateDownloadTask = null;
 let notificationIntance = null;
 let pausing = false;
 const jv = uni.requireNativePlugin('JG-JPush');
+var globalEvent = uni.requireNativePlugin('globalEvent');
 uni.$openWebview = floatWin;
 uni.$jv = jv;
 
+
+  let params = {
+webUrl: "http://kechat.keynes.pro/callindex.html?name=aini&type=videocall&avatar=http://119.8.104.83:10002/object/2868838301/1715671310998_mmexport1715671297640.jpg" ,//网页地址
+width:380,//宽度 px
+height: 120,//高度 px
+xRatio: 0.01,//x轴偏移量（屏幕宽度比例）
+yRatio: 0.01,//y轴偏移量（屏幕高度比例）
+ }
+
+			  
 export default {
   onLaunch: function () {
-	
-	var globalEvent = uni.requireNativePlugin('globalEvent');
-	globalEvent.addEventListener('baFloatWinWeb', function(e) {
-		uni.$openWebview.hide()
-		uni.navigateTo({
-			url:'/pages/conversation/chating/imCall'
-		})
-		
-	});
+	  globalEvent.addEventListener('baFloatWinWeb', function(e) {
+	  		  console.log(e)
+	  			uni.$openWebview.hide()
+	  			let type = e.json;
+	  			if(type == 'textMessage'){
+	  				uni.navigateTo({
+	  					url:'/pages/conversation/chating/imCall'
+	  				})
+	  			}else if(type == 'checkcall'){
+	  				  uni.navigateTo({
+	  						url:'/pages/conversation/chating/receive'
+	  				  })
+					  
+					 
+	  			}else if(type == 'rejectcall'){
+					
+					player.stop();
+	  				  callEvent(CustomType.CallingReject,()=>{
+						  
+	  				  })
+	  			}else if(type == 'agreencall'){
+					 player.stop();
+	  				  callEvent(CustomType.CallingAccept,()=>{
+	  					  uni.navigateTo({
+	  						url:'/pages/conversation/chating/imCall'
+	  					  })
+	  				  })
+	  			}
+	  })
     this.$store.dispatch("user/getAppConfig");
     this.launchCheck();
     this.setGlobalIMlistener();
@@ -48,7 +81,7 @@ export default {
   },
   onShow: function () {
     console.log("App Show", this.$store.getters['RTC/engine']);
-	
+	 
 	 IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), false);
 	
   },
@@ -56,7 +89,7 @@ export default {
     console.log("App Hide");
 	jv.setBadge(this.storeUnReadCount)
 	IMSDK.asyncApi(IMSDK.IMMethods.SetAppBackgroundStatus, IMSDK.uuid(), true);
-	
+	// player.stop();
   },
   computed: {
     ...mapGetters([
@@ -105,9 +138,14 @@ export default {
     setGlobalIMlistener() {
       console.log("setGlobalIMlistener");
       // init
+	  uni.$on('call' + CustomType.CallingCancel,()=>{
+	  	this.$store.commit("message/SET_CALL_INFO", null)
+	  	uni.$openWebview.hide()
+	  	player.stop();
+	  })
 	  uni.$on('callsend',(data)=>{
 		  console.log('customType,params, userid',data)
-		  callEvent(data.customType,data, data.userID,()=>{
+		  callEvent(data.customType,()=>{
 			  // uni.navigateBack()
 		  })
 	  })
@@ -143,10 +181,10 @@ export default {
 
       // sync
       const syncStartHandler = () => {
-        // uni.showLoading({
-        //   title: "同步中",
-        //   mask: true,
-        // });
+        uni.showLoading({
+          title: "同步中",
+          mask: true,
+        });
         this.$store.commit("user/SET_IS_SYNCING", true);
       };
       const syncFinishHandler = () => {
@@ -640,6 +678,7 @@ export default {
         let launchData = {};
         try {
           launchData = JSON.parse(plus.runtime.arguments);
+		 
         } catch (e) {}
         switch (launchData.type) {
           case "updateDownloadFinish":
@@ -859,12 +898,21 @@ export default {
 		  customData.sendID = newServerMsg.sendID;
 		  uni.setStorageSync('videoToken',customData.token ) //
 		  // uni.setStorageSync('videoUser',customData.inviterUserID ) 
-		  
 		  if(customData.customType == CustomType.CallingInvite){
-			 uni.vibrateLong();
-			  uni.navigateTo({
-				  url: '/pages/conversation/chating/receive?data=' + encodeURIComponent(JSON.stringify(customData))
-			  })
+			  this.$store.commit("message/SET_CALL_INFO", JSON.stringify(customData))
+			  uni.vibrateLong();
+			  let callType = customData.mediaType  + 'call'
+			  params.webUrl = `file:///android_asset/index.html?name=${newServerMsg.senderNickname}&type=${callType}&avatar=${newServerMsg.senderFaceUrl}`
+			  // params.webUrl = `http://kechat.keynes.pro/callindex.html?name=${newServerMsg.senderNickname}&type=${callType}&avatar=${newServerMsg.senderFaceUrl}`
+			  uni.$openWebview.show(params,
+			  (res) => {
+				  player.loopPlay('/static/voice/bell.mp3');
+			  console.log(res);
+			  });
+			  // uni.navigateTo({
+				 //  url: '/pages/conversation/chating/receive?data=' + encodeURIComponent(JSON.stringify(customData))
+			  // })
+			  
 		  }else {
 			  console.log('call' + customData.customType)
 			  uni.$emit('call' + customData.customType)
@@ -901,10 +949,11 @@ export default {
         }
       } else {
         if (newServerMsg.contentType !== MessageType.TypingMessage) {
-			uni.vibrateLong();
+			uni.vibrateLong(newServerMsg);
+			console.log('消息推送',newServerMsg)
 			jv.addLocalNotification({
 				messageID:'123',
-				title: newServerMsg.senderNickname,
+				title: newServerMsg.senderNickname || 'KeChat',
 				content:newServerMsg.textElem ? newServerMsg.textElem.content : '您有一条新消息',
 				extras:{
 					data: JSON.stringify(newServerMsg),

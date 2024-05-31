@@ -46,6 +46,7 @@
 	import {callEvent} from "@/util/call.js"
 import {getRtcConnectData} from "@/api/imApi.js"
 	export default {
+		
 		data(){
 			return{
 				vibrateTimer:null,
@@ -54,14 +55,13 @@ import {getRtcConnectData} from "@/api/imApi.js"
 			}
 		},
 		computed: {
-			...mapGetters(['storeSelfInfo',"storeCurrentConversation"])
+			...mapGetters(['storeSelfInfo',"storeCurrentConversation", "storeCallingInfo"])
 		},
 		onLoad(options) {
-			console.log('options.data',options.data)
-			this.customData = JSON.parse( options.data)
-			console.log('options.data',this.customData )
+			this.customData = this.storeCallingInfo
 			
 			uni.$on('call' + CustomType.CallingCancel,()=>{
+				this.$store.commit("message/SET_CALL_INFO", null)
 				uni.switchTab({
 					url: "/pages/conversation/conversationList/index?isRedirect=true",
 				});
@@ -93,15 +93,16 @@ import {getRtcConnectData} from "@/api/imApi.js"
 				//   this.customData.conversationID,
 				//   this.storeSelfInfo.userID
 				// );
-				callEvent(CustomType.CallingAccept, this.customData, this.storeSelfInfo.userID,()=>{
-					this.$store.commit("message/SET_CALL_INFO", this.customData)
+				callEvent(CustomType.CallingAccept,()=>{
 					uni.redirectTo({
 						url:'/pages/conversation/chating/imCall?chainnInfo=' + JSON.stringify(this.customData)
 					})
 				})
 			},
 			async refuse(){
-				callEvent(CustomType.CallingReject, this.customData, this.storeSelfInfo.userID,()=>{
+				
+				callEvent(CustomType.CallingReject,()=>{
+					this.$store.commit("message/SET_CALL_INFO", null)
 					uni.navigateBack()
 				})
 			}

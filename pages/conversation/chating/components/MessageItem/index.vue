@@ -231,7 +231,8 @@ export default {
 		if(!this.$store.getters.storeCurrentConversation.groupID){
 			return;
 		}
-		uni.$emit('atUser',{userData:this.source})
+		let data = [{userID: this.source.sendID, nickname:this.source. senderNickname}]
+		uni.$emit('atUser',data)
 	},
 	getshowCustomMessage(types){
 		if(this.source.contentType == MessageType.CustomMessage){

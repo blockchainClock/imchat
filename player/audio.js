@@ -56,6 +56,7 @@ export const oncePlay = (src,p,e,s) =>{
 	}
 }
 export const stop=()=>{
+	console.log('停止音无恶')
 	audioPlayer.stop()
 }
 export const loopPlay = (src,p,s)=>{

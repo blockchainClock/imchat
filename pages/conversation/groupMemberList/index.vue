@@ -44,7 +44,7 @@
           @updateCheck="updateCheck"
           :checked="isChecked(member.userID)"
           :checkVisible="showCheck"
-          :disabled="!canCheck(member) && showCheck"
+          :disabled="!canCheck(member,member.userID ) && showCheck"
           :item="member"
         />
       </u-list-item>
@@ -179,7 +179,7 @@ export default {
             userID !== this.$store.getters.storeCurrentUserID
           );
         }
-        if (this.type === GroupMemberListTypes.ChooseAt) {
+        if (this.type === GroupMemberListTypes.ChooseAt && userID !== this.$store.getters.storeCurrentUserID) {
           return true;
         }
 
@@ -272,7 +272,8 @@ export default {
         let pages = getCurrentPages();
         let prevPage = pages[pages.length - 2];
         if (this.type === GroupMemberListTypes.ChooseAt) {
-          prevPage.$vm.getCheckedUsers(this.getChoosedData);
+          // prevPage.$vm.getCheckedUsers(this.getChoosedData);
+		  uni.$emit('atUser', this.getChoosedData)
         } else {
           prevPage.$vm.sendRtcInvite(
             this.callMediaType,
@@ -289,13 +290,17 @@ export default {
     atAll() {
       let pages = getCurrentPages();
       let prevPage = pages[pages.length - 2];
-      prevPage.$vm.getCheckedUsers([
-        ...this.getChoosedData,
-        {
+      // prevPage.$vm.getCheckedUsers([
+      //   ...this.getChoosedData,
+      //   {
+      //     userID: "AtAllTag",
+      //     nickname: "所有人",
+      //   },
+      // ]);
+	   uni.$emit('atUser', [{
           userID: "AtAllTag",
           nickname: "所有人",
-        },
-      ]);
+        }])
       uni.navigateBack({
         delta: 1,
       });

@@ -5,6 +5,7 @@ import RtcEngine from '@/components/Agora-RTC-JS/index';
 import { CustomType } from "@/constant/im";
 // #endif
 let timer1;
+import player from '@/player/audio.js';
 let listeners = [];
 export default {
 	async initRTC({commit,dispatch,state}){
@@ -16,12 +17,15 @@ export default {
 		clearInterval(timer1)
 		
 		const engine = await RtcEngine.create('a3492b9b7f4242aa81b95e982dee911d')
+		
 		commit('setEngine',engine)
 		listeners = [
 			{
 				//自己加入房间成功
 				event:'JoinChannelSuccess',
 				handle:(channel, uid, elapsed)=>{
+					console.log('JoinChannelSuccess///////////');
+					player.loopPlay('/static/voice/bell.mp3');
 					uni.$emit('innerJoinChannelSuccess', {uid: uid,channel: channel, elapsed:elapsed })
 				}
 			},
@@ -29,6 +33,7 @@ export default {
 				//对方加入房间,即对方接通了通话
 				event:'UserJoined',
 				handle:(uid, elapsed)=>{
+					player.stop()
 					console.info('UserJoined///////////', uid, elapsed);
 					uni.$emit('innerUserJoined', ({uid: uid,reason:elapsed }))
 					commit('setDoing',false)
@@ -39,13 +44,7 @@ export default {
 					timer1 = setInterval(()=>{
 						time = time + 1;
 						commit('setCallTime',time)
-						let css = {
-							'padding':'5px',
-							'width':'60px',
-							'height':'60px',
-							'line-height':'25px'
-						}
-						let url = "file:///android_asset/index.html?css=" + JSON.stringify(css)
+						let url = "file:///android_asset/index.html?type=im" 
 						
 						uni.$openWebview.update({
 							webUrl: url + '&data=' + time.toString() + 's'
@@ -67,8 +66,9 @@ export default {
 				//自己离开通话房间
 				event:'LeaveChannel',
 				handle:(stats)=>{
+					player.stop()
 					uni.$emit('innerLeaveChannel', stats)
-					console.log('leave calling room',)
+					console.log('leave calling room')
 					uni.$off('call' + CustomType.CallingHungup)
 					uni.$off('call' + CustomType.CallingReject)
 					commit('setDoing',false)
@@ -78,7 +78,6 @@ export default {
 					listeners.forEach(({event,handle})=>{
 						engine.removeListener(event,handle)
 					})
-					uni.navigateBack()
 					// engine.destroy()
 					clearInterval(timer1)
 					setTimeout(()=>{
@@ -110,6 +109,10 @@ export default {
 		
 		listeners.forEach(({event,handle})=>{
 			engine.addListener(event,handle)
+		})
+		uni.$on('call' + CustomType.CallingCancel,()=>{
+			player.stop()
+			engine.leaveChannel()
 		})
 		uni.$on('call' + CustomType.CallingReject,()=>{
 			console.log('对方已拒绝')

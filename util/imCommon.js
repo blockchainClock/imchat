@@ -165,7 +165,6 @@ export const parseMessageByType = (pmsg, isNotify = false) => {
 	  return `${pmsg.senderNickname}：${pmsg.quoteElem.text}`;
 	  break;
     case MessageType.AtTextMessage:
-		console.log('@消息', pmsg)
       return `${pmsg.senderNickname}：${parseAt(pmsg.atTextElem, true)}`;
 	  break;
     case MessageType.PictureMessage:

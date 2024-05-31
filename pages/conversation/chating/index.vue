@@ -45,8 +45,6 @@ export default {
     if (options?.back2Tab) {
       this.back2Tab = JSON.parse(options.back2Tab);
     }
-	let subNVue = uni.getSubNVueById('concat')
-	subNVue.hide()
   },
   onUnload() {
     console.log("unload");

@@ -69,6 +69,7 @@ export default {
         : AddFriendQrCodePrefix;
       const sourceID = info.groupID ?? info.userID ?? "";
       this.qrLink = `${prefix}${sourceID}`;
+	  console.log('二维码', this.qrLink)
     },
   },
 };

@@ -126,7 +126,7 @@
 				},
 				startTime:0 ,//触摸开始的时间戳
 				
-				bellCtx:uni.createInnerAudioContext()
+				// bellCtx:uni.createInnerAudioContext()
 			}
 		},
 		
@@ -150,6 +150,7 @@
 			}
 		},
 		beforeCreate() {
+			console.log('开始加载')
 			const domModule = weex.requireModule('dom');
 			domModule.addRule('fontFace', {
 				'fontFamily': "iconfont",
@@ -167,22 +168,21 @@
 			
 			clearInterval(this.timer)
 			this.token = uni.getStorageSync('videoToken');
-			let channinfo = this.storeCallingInfo;
+			let channinfo = JSON.parse(this.storeCallingInfo);
 			this.channinfo = channinfo;
 			
 			this.to = channinfo.to ? channinfo.to : false;
 			this.channel.channelId = channinfo.conversationID;
 			this.channel.isAudio = channinfo.mediaType =='audio' ? true : false;
 			this.duration =  this.$store.getters['RTC/time']
+			this.uid =  this.$store.getters['RTC/uid'];
 			
-			uni.$on('call' + CustomType.CallingReject,()=>{
-				this.bellCtx.stop();
-			})
-			
-			if(!!this.engine){
+			if(!!this.engine ){
 				this.addListeners()
-				this.connected = true;
-				this.uid =  this.$store.getters['RTC/uid'];
+				if(this.uid != ''){
+					this.connected = true;
+				}
+				
 				console.log('uid',this.uid)
 				this.timer = setInterval(()=>{
 					this.duration =  this.$store.getters['RTC/time']
@@ -201,8 +201,7 @@
 				return;
 			}
 			
-			this.bellCtx.loop = true
-			this.bellCtx.src = '/static/voice/bell.mp3'
+			// this.bellCtx.src = '/static/voice/bell.mp3'
 			
 			
 			try{
@@ -230,7 +229,6 @@
 			uni.$off("callReject")
 			uni.$off('call' + CustomType.CallingReject)
 			uni.$off('call' + CustomType.CallingHungup)
-			this.bellCtx.destroy()
 			// this.destroyRTC();
 			this.removeListeners();
 			uni.setKeepScreenOn({keepScreenOn: false})
@@ -264,19 +262,11 @@
 			smallWindow(){
 				// this.smallFlag = true;
 				// if(!this.channel.isAudio) return;
-				let css = {
-					'padding':'5px',
-					'width':'60px',
-					'height':'60px',
-					'line-height':'25px',
-					'background':"#ffd500",
-					"color":"#000"
-				}
 				let params = {
-					webUrl: "file:///android_asset/index.html?data=1&css=" + JSON.stringify(css),//网页地址
-					width:90,//宽度 px
+					webUrl: "file:///android_asset/index.html?data=1&type=im",//网页地址
+					width:110,//宽度 px
 					height: 110,//高度 px
-					xRatio: 0.75,//x轴偏移量（屏幕宽度比例）
+					xRatio: 0.85,//x轴偏移量（屏幕宽度比例）
 					yRatio: 0,//y轴偏移量（屏幕高度比例）
 				}
 				clearInterval(this.timer)
@@ -285,14 +275,15 @@
 				   console.log(res);
 				});
 				this.removeListeners()
-				uni.navigateBack()
-				console.log('当前页面',uni.getCurrentPages().length)
+				uni.navigateBack({
+					delta:1
+				})
+				
 				
 			},
 			addListeners() { //初始化监听
 				uni.$on('innerJoinChannelSuccess',(data)=>{
 					if(this.to){
-						this.bellCtx.play()
 						//拨打者需开启超时,若30秒对方都未接通,则修改消息状态并退出房间
 						this.overtime = setTimeout(()=>{
 							this.cancel();
@@ -300,11 +291,9 @@
 					}
 				})
 				uni.$on('innerUserJoined',(data)=>{
-					console.log('innerUserJoined///////////');
 					this.connected = true
 					//接通后立即清理接听超时
 					clearTimeout(this.overtime)
-					this.bellCtx.stop()
 					this.uid = data.uid
 					//开始通话时间计时
 					this.timer = setInterval(()=>{
@@ -320,7 +309,7 @@
 				})
 				uni.$on('innerUserOffline',(data)=>{
 					this.transpose = false
-					// this.engine.leaveChannel()
+					this.engine.leaveChannel()
 				})
 				uni.$on('innerLeaveChannel',(data)=>{
 					this.removeListeners()
@@ -358,7 +347,6 @@
 			async leaveChannel(type) { //离开房间
 				console.log('type////////////',type)
 				this.$store.commit("message/SET_CALL_INFO", null)
-				this.bellCtx.stop()
 				this.removeListeners()
 				uni.$openWebview.hide()
 				this.back()
@@ -368,15 +356,15 @@
 				let params = this.channinfo;
 				params.time = this.duration;
 				params.customType = CustomType.CallingHungup
-				params.userID = this.storeSelfInfo.userID
-				
-				this.bellCtx.stop()
+				this.$store.commit("message/SET_CALL_INFO", JSON.stringify(params))
+				console.log('挂断信息',params)
 				uni.$emit('callsend', params)
 				this.engine && this.engine.leaveChannel();
 			},
 			back(){
 				var pages = getCurrentPages() ;
-				this.bellCtx.stop();
+				 console.log(pages)
+				uni.navigateBack()
 				console.log('返回')
 			},
 			async cancel(){//取消电话,未接通才可挂断
@@ -396,13 +384,12 @@
 				// 	}
 				// })
 				// this.channel.msg.content = "[取消通话]"
+				
 				let params = this.channinfo;
 				params.customType = CustomType.CallingCancel
-				params.userID = this.storeSelfInfo.userID
 				uni.$emit('callsend',params)
+				uni.$emit('call' + CustomType.CallingCancel)
 				this.leaveChannel(2)
-				this.bellCtx.stop()
-				this.engine && this.engine.leaveChannel();
 				
 				
 			},

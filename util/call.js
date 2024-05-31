@@ -54,9 +54,11 @@ export const callWebView = () => {
 	   (res) => {
 	});
 }
-export const callEvent = async(customType,params, userid, callBack)=>{
+export const callEvent = async(customType, callBack)=>{
+	let  userid =store.getters.storeSelfInfo.userID;
+	let params = JSON.parse(store.getters.storeCallingInfo);
+	console.log('......', params)
 	try{
-		console.log('kaishi', params)
 		let messagedata = {
 			data:{
 				customType: customType,
@@ -73,7 +75,6 @@ export const callEvent = async(customType,params, userid, callBack)=>{
 				time: params.time ? params.time:0
 			}
 		}
-		console.log(messagedata)
 		let message;
 		try{
 			message = await IMSDK.asyncApi(

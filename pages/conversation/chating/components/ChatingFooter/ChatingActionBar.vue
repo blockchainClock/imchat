@@ -43,6 +43,7 @@ import {getRtcConnectData} from "@/api/imApi.js"
 import { mapGetters, mapActions } from "vuex";
 import { CustomType } from "@/constant/im";
 import { parseMessageByType, offlinePushInfo } from "@/util/imCommon";
+import { title } from "process";
 export default {
 	computed: {
 	  ...mapGetters([
@@ -110,6 +111,7 @@ export default {
 			return;
 			//TODO handle the exception
 		}
+		offlinePushInfo.title = this.storeSelfInfo.nickname;
 		IMSDK.asyncApi(IMMethods.SendMessage, IMSDK.uuid(), {
 		  recvID: this.storeCurrentConversation.userID,
 		  groupID: this.storeCurrentConversation.groupID,
@@ -123,7 +125,8 @@ export default {
 			  params.userName = this.storeCurrentConversation.showName;
 			  params.sendID = this.storeSelfInfo.userID;
 			  params.to = this.storeCurrentConversation.userID;
-			 this.$store.commit("message/SET_CALL_INFO", params)
+			 this.$store.commit("message/SET_CALL_INFO", JSON.stringify(params));
+			 
 			  uni.navigateTo({
 			  	url:'/pages/conversation/chating/imCall?chainnInfo=' + JSON.stringify(params)
 			  })

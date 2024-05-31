@@ -29,6 +29,7 @@
 import { mapGetters, mapActions } from "vuex";
 import { html2Text,formatInputHtml } from "@/util/common";
 import { parseAt } from "@/util/imCommon";
+import { ContactChooseTypes, GroupMemberListTypes } from "@/constant";
 export default {
   props: {
     placeholder: {
@@ -37,7 +38,7 @@ export default {
     },
   },
   computed: {
-    ...mapGetters(["storeAtUser"])
+    ...mapGetters(["storeAtUser", "storeCurrentConversation"])
   },
   data() {
     return {
@@ -53,28 +54,18 @@ export default {
 	  atContent:[],
     };
   },
+  onUnload() {
+  	uni.$off('atUser')
+  },
    mounted() {
 	let _this = this;
 	  //data.senderNickname
-  	uni.$on('atUser',async (res)=>{
-		let oldContent = ''
-		await this.editorCtx.getContents({
-			success(data){
-				// oldContent = data.text == '\n' ? '' :  data.html;
-				// let sendhtml = `${oldContent}<i class="at_el"  data-custom="${res.userData.sendID}amp;${res.userData.senderNickname}"></i>`;
-				// console.log('seting html',sendhtml)
-				// const { text, atUserList } = formatInputHtml(sendhtml);
-				// _this.addAtUser(atUserList)
-				// _this.editorCtx.setContents({
-				// 	html: sendhtml,
-				// 	fail(err){
-				// 		console.log('//////',err)
-				// 	}
-				// })
-				_this.createCanvasData(res.userData.sendID, res.userData.senderNickname)
-				// _this.$emit('input',{ detail: {html:sendhtml}} )
-				// _this.lastStr = sendhtml;
-			}
+  	uni.$on('atUser', (res)=>{
+		console.log(res)
+		res.forEach((item,index)=>{
+			setTimeout(()=>{
+				_this.createCanvasData(item.userID, item.nickname)
+			}, index*500) 
 		})
 	})
   },
@@ -97,6 +88,7 @@ export default {
       this.insertImageFlag = true;
     },
     internalInsertImage() {
+		console.log('插图')
       this.editorCtx.insertImage({
         ...this.imageData,
         complete: () => {
@@ -164,9 +156,15 @@ export default {
 	     contentStr = contentStr.replace(str, "");
 	   });
 	   contentStr = html2Text(contentStr);
-	   
 	   if (contentStr === "@") {
-	     this.$emit("tryAt");
+	     // this.$emit("tryAt");
+		 this.editorCtx.setContents({
+			 html: ""
+		 })
+		 let groupId = this.storeCurrentConversation.groupID
+		 uni.navigateTo({
+		   url: `/pages/conversation/groupMemberList/index?type=${GroupMemberListTypes.ChooseAt}&groupID=${groupId}`,
+		 });
 	   }
 	   this.$emit("input", e);
 	   this.lastStr = e.detail.html;

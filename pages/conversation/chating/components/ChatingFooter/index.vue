@@ -358,6 +358,7 @@ export default {
         // #endif
       }
       this.$emit("scrollToBottom");
+	  console.log('消息', message)
 	  offlinePushInfo.title = this.storeSelfInfo.nickname;
 	  // offlinePushInfo.desc = this.storeSelfInfo.nickname;
       IMSDK.asyncApi(IMMethods.SendMessage, IMSDK.uuid(), {
